@@ -1,8 +1,8 @@
-import { useReadContract, useWriteContract, useAccount } from 'wagmi'
+import { useReadContract, useReadContracts, useWriteContract, useAccount, useBalance } from 'wagmi'
 import { CERES_DID_ADDRESS, CERES_REGISTRY_ADDRESS } from '../contracts/addresses'
 import { CeresDID_ABI } from '../contracts/CeresDID'
 import { CeresRegistry_ABI } from '../contracts/CeresRegistry'
-import { useCallback } from 'react'
+import { useCallback, useMemo } from 'react'
 import { useQueryClient } from '@tanstack/react-query'
 
 export interface Profile {
@@ -36,6 +36,15 @@ export function useCeres() {
   const queryClient = useQueryClient()
 
   // --- Read Hooks ---
+
+  function useProfileCount() {
+    return useReadContract({
+      ...didContract,
+      functionName: 'balanceOf',
+      args: address ? [address] : undefined,
+      query: { enabled: !!address },
+    })
+  }
 
   function useProfile(tokenId: bigint | undefined) {
     const result = useReadContract({
@@ -140,16 +149,93 @@ export function useCeres() {
     })
   }
 
+  function useBalanceOf(owner: `0x${string}` | undefined) {
+    return useReadContract({
+      ...didContract,
+      functionName: 'balanceOf',
+      args: owner ? [owner] : undefined,
+      query: { enabled: !!owner },
+    })
+  }
+
+  function useMintFee() {
+    return useReadContract({
+      ...registryContract,
+      functionName: 'mintFee',
+    })
+  }
+
+  function useMintFeeEnabled() {
+    return useReadContract({
+      ...registryContract,
+      functionName: 'mintFeeEnabled',
+    })
+  }
+
+  function useContractBalance() {
+    return useBalance({
+      address: CERES_REGISTRY_ADDRESS as `0x${string}`,
+    })
+  }
+
+  function useOwner() {
+    return useReadContract({
+      ...registryContract,
+      functionName: 'owner',
+    })
+  }
+
+  function useIsOwner() {
+    const { data: ownerAddr } = useOwner()
+    return useMemo(() => {
+      if (!address || !ownerAddr) return false
+      return String(address).toLowerCase() === String(ownerAddr).toLowerCase()
+    }, [address, ownerAddr])
+  }
+
+  /** Auto-detect the first token ID owned by the connected wallet */
+  function useUserTokenId(): bigint | undefined {
+    const { data: totalSupply } = useReadContract({
+      ...didContract,
+      functionName: 'totalSupply',
+      query: { enabled: !!address },
+    })
+
+    const contracts = useMemo(() => {
+      const count = totalSupply ? Math.min(Number(totalSupply), 50) : 0
+      if (count === 0 || !address) return []
+      return Array.from({ length: count }, (_, i) => ({
+        ...didContract,
+        functionName: 'ownerOf' as const,
+        args: [BigInt(i + 1)],
+      }))
+    }, [totalSupply, address])
+
+    const { data: ownerResults } = useReadContracts({ contracts })
+
+    return useMemo(() => {
+      if (!ownerResults || !address) return undefined
+      for (let i = 0; i < ownerResults.length; i++) {
+        const r = ownerResults[i]
+        if (r.result && String(r.result).toLowerCase() === String(address).toLowerCase()) {
+          return BigInt(i + 1)
+        }
+      }
+      return undefined
+    }, [ownerResults, address])
+  }
+
   // --- Write Hooks ---
 
   const { writeContractAsync } = useWriteContract()
 
   const createProfile = useCallback(
-    async (name: string, bio: string, avatar: string, urls: string[], inviterTokenId: bigint = 0n) => {
+    async (name: string, bio: string, avatar: string, urls: string[], inviterTokenId: bigint = 0n, value?: bigint) => {
       return writeContractAsync({
         ...registryContract,
         functionName: 'createProfile',
         args: [name, bio, avatar, urls, inviterTokenId],
+        value,
       })
     },
     [writeContractAsync],
@@ -161,6 +247,38 @@ export function useCeres() {
         ...didContract,
         functionName: 'updateProfile',
         args: [tokenId, name, bio, avatar, urls],
+      })
+    },
+    [writeContractAsync],
+  )
+
+  const setMintFee = useCallback(
+    async (feeInWei: bigint) => {
+      return writeContractAsync({
+        ...registryContract,
+        functionName: 'setMintFee',
+        args: [feeInWei],
+      })
+    },
+    [writeContractAsync],
+  )
+
+  const toggleMintFee = useCallback(
+    async (enabled: boolean) => {
+      return writeContractAsync({
+        ...registryContract,
+        functionName: 'toggleMintFee',
+        args: [enabled],
+      })
+    },
+    [writeContractAsync],
+  )
+
+  const withdrawFees = useCallback(
+    async () => {
+      return writeContractAsync({
+        ...registryContract,
+        functionName: 'withdrawFees',
       })
     },
     [writeContractAsync],
@@ -195,6 +313,7 @@ export function useCeres() {
 
   return {
     address,
+    useProfileCount,
     useProfile,
     useTotalProfiles,
     useTotalSupply,
@@ -203,6 +322,16 @@ export function useCeres() {
     useDirectInvitees,
     useDescendantCount,
     useLevel,
+    useBalanceOf,
+    useMintFee,
+    useMintFeeEnabled,
+    useContractBalance,
+    useOwner,
+    useIsOwner,
+    useUserTokenId,
+    setMintFee,
+    toggleMintFee,
+    withdrawFees,
     createProfile,
     updateProfile,
     getLevelName,

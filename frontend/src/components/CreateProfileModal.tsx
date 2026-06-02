@@ -1,4 +1,5 @@
 import { useState } from 'react'
+import { Link } from 'react-router-dom'
 import { useAccount } from 'wagmi'
 import { useCeres } from '../hooks/useCeres'
 import { useI18n } from '../I18nContext'
@@ -13,8 +14,16 @@ interface CreateProfileModalProps {
 export function CreateProfileModal({ open, onClose, onCreated }: CreateProfileModalProps) {
   const { t } = useI18n()
   const { address } = useAccount()
-  const { createProfile } = useCeres()
+  const { createProfile, useMintFee, useMintFeeEnabled, useProfileCount } = useCeres()
   const [searchParams] = useSearchParams()
+
+  const { data: mintFeeData } = useMintFee()
+  const { data: mintFeeEnabledData } = useMintFeeEnabled()
+  const { data: profileCount } = useProfileCount()
+  const mintFeeWei = (mintFeeData as bigint) ?? 0n
+  const mintFeeEnabled = (mintFeeEnabledData as boolean) ?? false
+  const mintFeeEth = mintFeeWei ? Number(mintFeeWei) / 1e18 : 0
+  const hasProfile = profileCount != null && Number(profileCount) > 0
 
   const inviterFromUrl = searchParams.get('ref') ?? ''
 
@@ -35,7 +44,8 @@ export function CreateProfileModal({ open, onClose, onCreated }: CreateProfileMo
     try {
       const urlList = urls.split(',').map((u) => u.trim()).filter(Boolean)
       const inviterId = inviter ? BigInt(inviter) : 0n
-      const hash = await createProfile(name, bio, avatar, urlList, inviterId)
+      const feeValue = mintFeeEnabled ? mintFeeWei : undefined
+      const hash = await createProfile(name, bio, avatar, urlList, inviterId, feeValue)
       setSuccess(hash as unknown as bigint)
       onCreated?.(hash as unknown as bigint)
     } catch (e) {
@@ -56,7 +66,31 @@ export function CreateProfileModal({ open, onClose, onCreated }: CreateProfileMo
           {address ? `${address.slice(0, 6)}...${address.slice(-4)}` : ''}
         </p>
 
-        {success !== null ? (
+        {hasProfile ? (
+          <div className="text-center py-8">
+            <div className="w-16 h-16 mx-auto mb-4 bg-amber-100 rounded-full flex items-center justify-center">
+              <svg className="w-8 h-8 text-amber-600" fill="none" viewBox="0 0 24 24" stroke="currentColor">
+                <path strokeLinecap="round" strokeLinejoin="round" strokeWidth={2} d="M12 9v2m0 4h.01m-6.938 4h13.856c1.54 0 2.502-1.667 1.732-2.5L13.732 4c-.77-.833-1.964-.833-2.732 0L4.082 16.5c-.77.833.192 2.5 1.732 2.5z" />
+              </svg>
+            </div>
+            <h3 className="text-lg font-semibold text-gray-900">You already have a DID</h3>
+            <p className="text-sm text-gray-500 mt-2">Each address can only create one DID profile.</p>
+            <div className="mt-6 flex gap-3 justify-center">
+              <Link
+                to="/search"
+                className="px-6 py-2 bg-emerald-600 text-white rounded-lg hover:bg-emerald-700 transition-colors font-medium"
+              >
+                Search Profiles
+              </Link>
+              <button
+                onClick={onClose}
+                className="px-6 py-2 border border-gray-300 text-gray-700 rounded-lg hover:bg-gray-50 transition-colors font-medium"
+              >
+                Close
+              </button>
+            </div>
+          </div>
+        ) : success !== null ? (
           <div className="text-center py-8">
             <div className="w-16 h-16 mx-auto mb-4 bg-emerald-100 rounded-full flex items-center justify-center">
               <svg className="w-8 h-8 text-emerald-600" fill="none" viewBox="0 0 24 24" stroke="currentColor">
@@ -126,6 +160,17 @@ export function CreateProfileModal({ open, onClose, onCreated }: CreateProfileMo
                 />
               </div>
             </div>
+
+            {mintFeeEnabled && (
+              <div className="mt-4 p-3 bg-amber-50 rounded-lg border border-amber-200">
+                <div className="flex items-center gap-2">
+                  <span>💰</span>
+                  <span className="text-sm font-medium text-amber-800">
+                    Mint Fee: {mintFeeEth} ETH
+                  </span>
+                </div>
+              </div>
+            )}
 
             {error && (
               <div className="mt-4 p-3 bg-red-50 border border-red-200 rounded-lg text-sm text-red-700">{error}</div>

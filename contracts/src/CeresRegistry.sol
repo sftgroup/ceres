@@ -35,7 +35,19 @@ contract CeresRegistry is Ownable {
     /// @notice tokenId → total descendant count (cached, incrementally updated).
     mapping(uint256 => uint256) public descendantCount;
 
+    /// @notice Fee to mint a DID profile.
+    uint256 public mintFee = 0.001 ether;
+
+    /// @notice Whether mint fee is enabled.
+    bool public mintFeeEnabled = false;
+
     // ───── Events ─────
+
+    event Transfer(
+        address indexed from,
+        address indexed to,
+        uint256 indexed tokenId
+    );
 
     event ProfileCreated(
         uint256 indexed tokenId,
@@ -44,6 +56,9 @@ contract CeresRegistry is Ownable {
     );
 
     event DIDTransferred(uint256 indexed tokenId, address from, address to);
+    event MintFeeUpdated(uint256 newFee);
+    event MintFeeToggled(bool enabled);
+    event FeesWithdrawn(address to, uint256 amount);
 
     // ───── Errors ─────
     error NotDIDContract();
@@ -75,7 +90,12 @@ contract CeresRegistry is Ownable {
         string calldata avatar,
         string[] calldata urls,
         uint256 inviterTokenId
-    ) external returns (uint256) {
+    ) external payable returns (uint256) {
+        // Mint fee check
+        if (mintFeeEnabled) {
+            require(msg.value >= mintFee, "Insufficient mint fee");
+        }
+
         // Basic sanity
         if (bytes(name).length == 0) revert NameRequired();
         if (urls.length > 20) revert TooManyURLs(urls.length, 20);
@@ -109,6 +129,7 @@ contract CeresRegistry is Ownable {
         // Set initial profile via DID contract
         didContract.updateProfile(tokenId, name, bio, avatar, urls);
 
+        emit Transfer(address(0), msg.sender, tokenId);
         emit ProfileCreated(tokenId, msg.sender, inviterTokenId);
         return tokenId;
     }
@@ -202,6 +223,27 @@ contract CeresRegistry is Ownable {
 
     function totalProfiles() external view returns (uint256) {
         return didContract.totalSupply();
+    }
+
+    // ───── Internal ─────
+
+    // ───── Owner: Fee Management ─────
+
+    function setMintFee(uint256 _fee) external onlyOwner {
+        mintFee = _fee;
+        emit MintFeeUpdated(_fee);
+    }
+
+    function toggleMintFee(bool _enabled) external onlyOwner {
+        mintFeeEnabled = _enabled;
+        emit MintFeeToggled(_enabled);
+    }
+
+    function withdrawFees() external onlyOwner {
+        uint256 balance = address(this).balance;
+        require(balance > 0, "No fees to withdraw");
+        payable(owner()).transfer(balance);
+        emit FeesWithdrawn(owner(), balance);
     }
 
     // ───── Internal ─────

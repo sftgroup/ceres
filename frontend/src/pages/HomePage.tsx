@@ -18,14 +18,16 @@ const LEVELS = [
 export function HomePage() {
   const { t } = useI18n()
   const { isConnected } = useAccount()
-  const { useTotalProfiles, useTotalSupply } = useCeres()
+  const { useTotalProfiles, useTotalSupply, useProfileCount } = useCeres()
   const { data: totalProfiles } = useTotalProfiles()
   const { data: totalSupply } = useTotalSupply()
+  const { data: profileCount } = useProfileCount()
 
   const [showCreate, setShowCreate] = useState(false)
 
   const totalProf = totalProfiles != null ? Number(totalProfiles) : 0
   const totalSup = totalSupply != null ? Number(totalSupply) : 0
+  const hasProfile = profileCount != null && Number(profileCount) > 0
 
   return (
     <div className="min-h-screen">
@@ -50,15 +52,27 @@ export function HomePage() {
             </h1>
             <p className="text-xl text-gray-600 mb-4">{t('home.hero.subtitle')}</p>
             <p className="text-gray-500 mb-8">{t('app.description')}</p>
-            <button
-              onClick={() => isConnected ? setShowCreate(true) : null}
-              className="inline-flex items-center gap-2 px-8 py-4 bg-gradient-to-r from-emerald-600 to-teal-500 text-white font-semibold rounded-xl hover:from-emerald-700 hover:to-teal-600 transition-all shadow-lg shadow-emerald-200 hover:shadow-xl hover:shadow-emerald-300 transform hover:-translate-y-0.5"
-            >
-              <svg className="w-5 h-5" fill="none" viewBox="0 0 24 24" stroke="currentColor">
-                <path strokeLinecap="round" strokeLinejoin="round" strokeWidth={2} d="M12 4v16m8-8H4" />
-              </svg>
-              {t('home.hero.cta')}
-            </button>
+            {isConnected && hasProfile ? (
+              <Link
+                to="/search"
+                className="inline-flex items-center gap-2 px-8 py-4 bg-gradient-to-r from-emerald-600 to-teal-500 text-white font-semibold rounded-xl hover:from-emerald-700 hover:to-teal-600 transition-all shadow-lg shadow-emerald-200 hover:shadow-xl hover:shadow-emerald-300 transform hover:-translate-y-0.5"
+              >
+                <svg className="w-5 h-5" fill="none" viewBox="0 0 24 24" stroke="currentColor">
+                  <path strokeLinecap="round" strokeLinejoin="round" strokeWidth={2} d="M21 21l-6-6m2-5a7 7 0 11-14 0 7 7 0 0114 0z" />
+                </svg>
+                {t('nav.search')}
+              </Link>
+            ) : (
+              <button
+                onClick={() => isConnected ? setShowCreate(true) : null}
+                className="inline-flex items-center gap-2 px-8 py-4 bg-gradient-to-r from-emerald-600 to-teal-500 text-white font-semibold rounded-xl hover:from-emerald-700 hover:to-teal-600 transition-all shadow-lg shadow-emerald-200 hover:shadow-xl hover:shadow-emerald-300 transform hover:-translate-y-0.5"
+              >
+                <svg className="w-5 h-5" fill="none" viewBox="0 0 24 24" stroke="currentColor">
+                  <path strokeLinecap="round" strokeLinejoin="round" strokeWidth={2} d="M12 4v16m8-8H4" />
+                </svg>
+                {t('home.hero.cta')}
+              </button>
+            )}
           </div>
         </div>
       </section>
@@ -115,12 +129,21 @@ export function HomePage() {
             Mint your DID NFT and start inviting friends. Your social graph, on chain.
           </p>
           <div className="flex flex-col sm:flex-row gap-4 justify-center">
-            <button
-              onClick={() => setShowCreate(true)}
-              className="px-8 py-3 bg-white text-emerald-700 font-semibold rounded-xl hover:bg-emerald-50 transition-colors shadow-lg"
-            >
-              {t('home.hero.cta')}
-            </button>
+            {isConnected && hasProfile ? (
+              <Link
+                to="/search"
+                className="px-8 py-3 bg-white text-emerald-700 font-semibold rounded-xl hover:bg-emerald-50 transition-colors shadow-lg"
+              >
+                {t('nav.search')}
+              </Link>
+            ) : (
+              <button
+                onClick={() => setShowCreate(true)}
+                className="px-8 py-3 bg-white text-emerald-700 font-semibold rounded-xl hover:bg-emerald-50 transition-colors shadow-lg"
+              >
+                {t('home.hero.cta')}
+              </button>
+            )}
             <Link
               to="/search"
               className="px-8 py-3 border-2 border-white/30 text-white font-semibold rounded-xl hover:bg-white/10 transition-colors"

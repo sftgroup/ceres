@@ -1,3 +1,4 @@
+import { useEffect } from 'react'
 import { BrowserRouter, Routes, Route } from 'react-router-dom'
 import { QueryClient, QueryClientProvider } from '@tanstack/react-query'
 import { WagmiProvider } from 'wagmi'
@@ -7,7 +8,9 @@ import { Navbar } from './components/Navbar'
 import { HomePage } from './pages/HomePage'
 import { ProfilePage } from './pages/ProfilePage'
 import { InvitePage } from './pages/InvitePage'
+import { MintPage } from './pages/MintPage'
 import { SearchPage } from './pages/SearchPage'
+import { AdminPage } from './pages/AdminPage'
 
 const queryClient = new QueryClient({
   defaultOptions: {
@@ -19,6 +22,19 @@ const queryClient = new QueryClient({
 })
 
 function App() {
+  // Auto-refresh on wallet account change (OKX wallet account switch)
+  useEffect(() => {
+    if (typeof window !== 'undefined' && window.ethereum) {
+      const handleAccountsChanged = () => {
+        window.location.reload()
+      }
+      window.ethereum.on('accountsChanged', handleAccountsChanged)
+      return () => {
+        window.ethereum.removeListener('accountsChanged', handleAccountsChanged)
+      }
+    }
+  }, [])
+
   return (
     <WagmiProvider config={config}>
       <QueryClientProvider client={queryClient}>
@@ -31,7 +47,9 @@ function App() {
                   <Route path="/" element={<HomePage />} />
                   <Route path="/profile/:tokenId" element={<ProfilePage />} />
                   <Route path="/invite" element={<InvitePage />} />
+                  <Route path="/mint" element={<MintPage />} />
                   <Route path="/search" element={<SearchPage />} />
+                  <Route path="/admin" element={<AdminPage />} />
                 </Routes>
               </main>
             </div>
