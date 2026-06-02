@@ -1,5 +1,5 @@
 import { useEffect, Component } from 'react'
-import { createHashRouter, RouterProvider, Outlet } from 'react-router-dom'
+import { HashRouter, Routes, Route } from 'react-router-dom'
 import { QueryClient, QueryClientProvider } from '@tanstack/react-query'
 import { WagmiProvider, useConnect, useAccount } from 'wagmi'
 import { config } from './config'
@@ -44,11 +44,7 @@ class AppErrorBoundary extends Component<{ children: React.ReactNode }, { error:
   }
 }
 
-/**
- * After "Switch Account" triggers a page reload, sessionStorage holds the
- * chosen connector id. On mount, find it and auto-connect — the wallet
- * will show its account picker since this is a fresh page context.
- */
+/** Auto-connects after "Switch Account" page reload */
 function WalletSync({ children }: { children: React.ReactNode }) {
   const { connectors, connect } = useConnect()
   const { isConnected } = useAccount()
@@ -57,7 +53,6 @@ function WalletSync({ children }: { children: React.ReactNode }) {
     const storedId = sessionStorage.getItem('ceres_reconnect')
     if (!storedId || isConnected) return
 
-    // Connectors may not be ready immediately after wagmi init
     const timer = setInterval(() => {
       const c = connectors.find(
         (x: any) => x.id === storedId || x.uid === storedId || x.name === storedId,
@@ -79,45 +74,30 @@ function WalletSync({ children }: { children: React.ReactNode }) {
   return <>{children}</>
 }
 
-/**
- * Layout component that wraps all routes (Navbar + content area).
- */
-function AppLayout() {
-  return (
-    <AppErrorBoundary>
-      <WalletSync>
-        <div className="min-h-screen bg-gray-50">
-          <Navbar />
-          <main>
-            <Outlet />
-          </main>
-        </div>
-      </WalletSync>
-    </AppErrorBoundary>
-  )
-}
-
-const router = createHashRouter([
-  {
-    path: '/',
-    element: <AppLayout />,
-    children: [
-      { index: true, element: <HomePage /> },
-      { path: 'profile/:tokenId', element: <ProfilePage /> },
-      { path: 'invite', element: <InvitePage /> },
-      { path: 'mint', element: <MintPage /> },
-      { path: 'search', element: <SearchPage /> },
-      { path: 'admin', element: <AdminPage /> },
-    ],
-  },
-])
-
 function App() {
   return (
     <WagmiProvider config={config}>
       <QueryClientProvider client={queryClient}>
         <I18nProvider>
-          <RouterProvider router={router} />
+          <AppErrorBoundary>
+            <WalletSync>
+              <HashRouter>
+                <div className="min-h-screen bg-gray-50">
+                  <Navbar />
+                  <main>
+                    <Routes>
+                      <Route path="/" element={<HomePage />} />
+                      <Route path="/profile/:tokenId" element={<ProfilePage />} />
+                      <Route path="/invite" element={<InvitePage />} />
+                      <Route path="/mint" element={<MintPage />} />
+                      <Route path="/search" element={<SearchPage />} />
+                      <Route path="/admin" element={<AdminPage />} />
+                    </Routes>
+                  </main>
+                </div>
+              </HashRouter>
+            </WalletSync>
+          </AppErrorBoundary>
         </I18nProvider>
       </QueryClientProvider>
     </WagmiProvider>
