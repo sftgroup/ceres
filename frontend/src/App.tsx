@@ -30,22 +30,29 @@ function WalletSync({ children }: { children: React.ReactNode }) {
     const ethereum = (window as any).ethereum
     if (!ethereum) return
 
-    const handleAccountsChanged = () => {
-      // Wagmi should handle this, but force reconnect to be safe
-      if (isConnected) {
-        reconnect()
-      }
+    const handleAccountsChanged = (...args: unknown[]) => {
+      console.log('[Ceres] accountsChanged', args)
+      reconnect()
     }
 
-    const handleChainChanged = () => {
-      // Wagmi's syncConnectedChain should handle this
+    const handleChainChanged = (...args: unknown[]) => {
+      console.log('[Ceres] chainChanged', args)
+      reconnect()
+    }
+
+    const handleDisconnect = () => {
+      console.log('[Ceres] disconnect')
+      Object.keys(localStorage).forEach(k => { if (k.startsWith('wagmi')) localStorage.removeItem(k) })
+      reconnect()
     }
 
     ethereum.on('accountsChanged', handleAccountsChanged)
     ethereum.on('chainChanged', handleChainChanged)
+    ethereum.on('disconnect', handleDisconnect)
     return () => {
       ethereum.removeListener('accountsChanged', handleAccountsChanged)
       ethereum.removeListener('chainChanged', handleChainChanged)
+      ethereum.removeListener('disconnect', handleDisconnect)
     }
   }, [reconnect, isConnected])
 
