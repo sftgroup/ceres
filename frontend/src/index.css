@@ -1,52 +1,107 @@
 @import "tailwindcss";
 
+/* ============================================
+   Ceres Dark Theme — override base layer
+   ============================================ */
+
+@layer base {
+  html {
+    scroll-behavior: smooth;
+    -webkit-font-smoothing: antialiased;
+    -moz-osx-font-smoothing: grayscale;
+  }
+
+  body {
+    font-family: 'JetBrains Mono', 'Fira Code', ui-monospace, SFMono-Regular, Menlo, Monaco,
+      'Cascadia Code', 'Source Code Pro', Consolas, 'Liberation Mono', monospace;
+    background-color: #0a0a0f;
+    color: #e0e0e8;
+  }
+
+  /* Scrollbar */
+  ::-webkit-scrollbar { width: 6px; height: 6px; }
+  ::-webkit-scrollbar-track { background: #0a0a0f; }
+  ::-webkit-scrollbar-thumb { background: #2a2a40; border-radius: 3px; }
+  ::-webkit-scrollbar-thumb:hover { background: #333355; }
+
+  /* Selection */
+  ::selection { background: rgba(0, 240, 255, 0.25); color: #e0e0e8; }
+  ::placeholder { color: #555570 !important; opacity: 1; }
+}
+
 @theme {
-  --color-emerald-50: #ecfdf5;
-  --color-emerald-100: #d1fae5;
-  --color-emerald-200: #a7f3d0;
-  --color-emerald-300: #6ee7b7;
-  --color-emerald-400: #34d399;
-  --color-emerald-500: #10b981;
-  --color-emerald-600: #059669;
-  --color-emerald-700: #047857;
-  --color-emerald-800: #065f46;
-  --color-emerald-900: #064e3b;
-  --color-emerald-950: #022c22;
+  /* Keep original white/black */
+  --color-white: #ffffff;
+  --color-black: #000000;
+
+  /* Override gray — keep Tailwind names but use dark palette */
+  --color-gray-50: #12121a;
+  --color-gray-100: #16162a;
+  --color-gray-200: #1a1a2e;
+  --color-gray-300: #222240;
+  --color-gray-400: #2a2a4a;
+  --color-gray-500: #333355;
+  --color-gray-600: #555570;
+  --color-gray-700: #6b6b80;
+  --color-gray-800: #808090;
+  --color-gray-900: #a0a0b0;
+  --color-gray-950: #c0c0cc;
 }
 
 @layer utilities {
-  .animate-blob {
-    animation: blob 8s infinite;
+  /* ── Background Patterns ── */
+  .bg-grid-dots {
+    background-image: radial-gradient(circle, rgba(0, 240, 255, 0.06) 1px, transparent 1px);
+    background-size: 24px 24px;
   }
-  .animation-delay-2000 {
-    animation-delay: 2s;
+  .bg-grid-lines {
+    background-image:
+      linear-gradient(rgba(0, 240, 255, 0.03) 1px, transparent 1px),
+      linear-gradient(90deg, rgba(0, 240, 255, 0.03) 1px, transparent 1px);
+    background-size: 40px 40px;
   }
-  .animation-delay-4000 {
-    animation-delay: 4s;
+
+  /* ── Neon Text Glow ── */
+  .text-glow-cyan { text-shadow: 0 0 10px rgba(0, 240, 255, 0.5), 0 0 20px rgba(0, 240, 255, 0.3); }
+  .text-glow-emerald { text-shadow: 0 0 10px rgba(16, 185, 129, 0.5), 0 0 20px rgba(16, 185, 129, 0.3); }
+
+  /* ── Box Shadow Glows ── */
+  .shadow-glow-cyan { box-shadow: 0 0 15px rgba(0, 240, 255, 0.1), 0 0 30px rgba(0, 240, 255, 0.05); }
+  .shadow-glow-emerald { box-shadow: 0 0 15px rgba(16, 185, 129, 0.1), 0 0 30px rgba(16, 185, 129, 0.05); }
+  .shadow-glow-purple { box-shadow: 0 0 15px rgba(124, 58, 237, 0.1), 0 0 30px rgba(124, 58, 237, 0.05); }
+
+  /* ── Glass Panel ── */
+  .glass-panel {
+    background: rgba(18, 18, 26, 0.85);
+    backdrop-filter: blur(12px);
+    -webkit-backdrop-filter: blur(12px);
+    border: 1px solid rgba(42, 42, 64, 0.6);
+  }
+  .glass-panel-hover:hover {
+    background: rgba(22, 22, 42, 0.9);
+    border-color: rgba(0, 240, 255, 0.2);
+    box-shadow: 0 0 12px rgba(0, 240, 255, 0.08);
+  }
+
+  /* ── Neon Border ── */
+  .border-glow-cyan {
+    border-color: rgba(0, 240, 255, 0.25);
+    box-shadow: 0 0 6px rgba(0, 240, 255, 0.08);
+  }
+
+  /* ── Divider ── */
+  .neon-divider {
+    height: 1px;
+    background: linear-gradient(90deg, transparent, rgba(0, 240, 255, 0.3), rgba(124, 58, 237, 0.3), transparent);
+  }
+
+  /* ── Animations ── */
+  .animate-glow-pulse {
+    animation: glow-pulse 2s ease-in-out infinite;
   }
 }
 
-@keyframes blob {
-  0% {
-    transform: translate(0px, 0px) scale(1);
-  }
-  33% {
-    transform: translate(30px, -50px) scale(1.1);
-  }
-  66% {
-    transform: translate(-20px, 20px) scale(0.9);
-  }
-  100% {
-    transform: translate(0px, 0px) scale(1);
-  }
-}
-
-html {
-  scroll-behavior: smooth;
-  -webkit-font-smoothing: antialiased;
-  -moz-osx-font-smoothing: grayscale;
-}
-
-body {
-  font-family: -apple-system, BlinkMacSystemFont, 'Segoe UI', 'PingFang SC', 'Microsoft YaHei', sans-serif;
+@keyframes glow-pulse {
+  0%, 100% { opacity: 0.4; box-shadow: 0 0 5px rgba(0, 240, 255, 0.1); }
+  50% { opacity: 1; box-shadow: 0 0 20px rgba(0, 240, 255, 0.25); }
 }

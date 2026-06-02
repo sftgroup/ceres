@@ -11,6 +11,7 @@ import { InvitePage } from './pages/InvitePage'
 import { MintPage } from './pages/MintPage'
 import { SearchPage } from './pages/SearchPage'
 import { AdminPage } from './pages/AdminPage'
+import Developers from './pages/Developers'
 
 const queryClient = new QueryClient({
   defaultOptions: {
@@ -27,13 +28,13 @@ class ErrorBoundary extends Component<{ children: React.ReactNode }, { error: st
   render() {
     if (this.state.error) {
       return (
-        <div className="min-h-screen bg-gray-50 flex items-center justify-center">
+        <div className="min-h-screen bg-[#12121a] flex items-center justify-center">
           <div className="text-center max-w-md px-4">
             <div className="text-4xl mb-4">⚠️</div>
-            <h2 className="text-xl font-bold text-gray-900 mb-2">Something went wrong</h2>
-            <p className="text-sm text-gray-500 mb-4">{this.state.error}</p>
+            <h2 className="text-xl font-bold text-[#e0e0e8] mb-2">Something went wrong</h2>
+            <p className="text-sm text-[#6b6b80] mb-4">{this.state.error}</p>
             <button onClick={() => { this.setState({ error: null }); window.location.reload() }}
-              className="px-6 py-2 bg-emerald-600 text-white rounded-lg hover:bg-emerald-700 transition-colors">
+              className="px-6 py-2 bg-[#10b981] text-[#e0e0e8] rounded-lg hover:bg-[#059669] transition-colors">
               Reload
             </button>
           </div>
@@ -90,7 +91,7 @@ function App() {
           <BrowserRouter>
             <ErrorBoundary>
             <WalletSync>
-              <div className="min-h-screen bg-gray-50">
+              <div className="min-h-screen bg-[#12121a]">
                 <Navbar />
                 <main>
                   <Routes>
@@ -100,6 +101,7 @@ function App() {
                     <Route path="/mint" element={<MintPage />} />
                     <Route path="/search" element={<SearchPage />} />
                     <Route path="/admin" element={<AdminPage />} />
+                    <Route path="/developers" element={<Developers />} />
                   </Routes>
                 </main>
               </div>

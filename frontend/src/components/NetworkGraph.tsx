@@ -131,9 +131,9 @@ export function NetworkGraph({ tokenId }: { tokenId: bigint; depth?: number }) {
 
   if (!center) return (
     <div className="w-full">
-      <h3 className="text-lg font-semibold text-gray-900 mb-4">{t('graph.networkTitle')}</h3>
+      <h3 className="text-lg font-semibold text-[#e0e0e8] mb-4">{t('graph.networkTitle')}</h3>
       <div className="bg-[#0f172a] rounded-2xl border border-gray-800 p-4">
-        <p className="text-center py-20 text-gray-500 text-sm">{t('graph.loading')}</p>
+        <p className="text-center py-20 text-[#6b6b80] text-sm">{t('graph.loading')}</p>
       </div>
     </div>
   )
@@ -141,9 +141,9 @@ export function NetworkGraph({ tokenId }: { tokenId: bigint; depth?: number }) {
   return (
     <div className="w-full">
       <div className="flex items-center justify-between mb-4">
-        <h3 className="text-lg font-semibold text-gray-900">{t('graph.networkTitle')}</h3>
+        <h3 className="text-lg font-semibold text-[#e0e0e8]">{t('graph.networkTitle')}</h3>
         {invitees.length > 0 && (
-          <span className="text-xs bg-gray-100 text-gray-600 px-2.5 py-1 rounded-full font-medium">
+          <span className="text-xs bg-[#16162a] text-[#808090] px-2.5 py-1 rounded-full font-medium">
             {invitees.length} {t('graph.nodes', { count: invitees.length, plural: invitees.length !== 1 ? 's' : '' })} →
           </span>
         )}
@@ -151,12 +151,12 @@ export function NetworkGraph({ tokenId }: { tokenId: bigint; depth?: number }) {
 
       <div className="bg-[#0f172a] rounded-2xl border border-gray-800 p-4 overflow-hidden">
         {invitees.length === 0 ? (
-          <div className="text-center py-20 text-gray-500">
-            <svg className="w-16 h-16 mx-auto mb-4 text-gray-700" fill="none" viewBox="0 0 24 24" stroke="currentColor">
+          <div className="text-center py-20 text-[#6b6b80]">
+            <svg className="w-16 h-16 mx-auto mb-4 text-[#a0a0b0]" fill="none" viewBox="0 0 24 24" stroke="currentColor">
               <path strokeLinecap="round" strokeLinejoin="round" strokeWidth={1} d="M12 4.354a4 4 0 110 5.292M15 21H3v-1a6 6 0 0112 0v1zm0 0h6v-1a6 6 0 00-9-5.197m13.5-9a2.5 2.5 0 11-5 0 2.5 2.5 0 015 0z" />
             </svg>
             <p className="text-sm">{t('graph.noConnections')}</p>
-            <p className="text-xs text-gray-600 mt-1">{t('graph.shareInvite')}</p>
+            <p className="text-xs text-[#808090] mt-1">{t('graph.shareInvite')}</p>
           </div>
         ) : (
           <svg ref={undefined as any} viewBox="0 0 520 520" className="w-full max-w-[520px] mx-auto">

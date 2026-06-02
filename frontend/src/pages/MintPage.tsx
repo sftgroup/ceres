@@ -68,11 +68,11 @@ export function MintPage() {
 
   if (!isConnected) {
     return (
-      <div className="min-h-screen bg-gradient-to-br from-emerald-50 via-white to-teal-50 flex items-center justify-center">
+      <div className="min-h-screen bg-gradient-to-br from-[#0a2e1a] via-[#12121a] to-[#0a2e2a] flex items-center justify-center">
         <div className="max-w-md mx-auto px-4 py-16 text-center">
           <div className="text-6xl mb-6">🌱</div>
-          <h2 className="text-2xl font-bold text-gray-900 mb-3">{t('mint.connectWallet')}</h2>
-          <p className="text-gray-500 mb-8">{t('mint.connectDesc')}</p>
+          <h2 className="text-2xl font-bold text-[#e0e0e8] mb-3">{t('mint.connectWallet')}</h2>
+          <p className="text-[#6b6b80] mb-8">{t('mint.connectDesc')}</p>
           <ConnectButton variant="cta" />
         </div>
       </div>
@@ -81,23 +81,23 @@ export function MintPage() {
 
   if (hasDID && userTokenId != null) {
     return (
-      <div className="min-h-screen bg-gradient-to-br from-emerald-50 via-white to-teal-50 flex items-center justify-center">
+      <div className="min-h-screen bg-gradient-to-br from-[#0a2e1a] via-[#12121a] to-[#0a2e2a] flex items-center justify-center">
         <div className="max-w-md mx-auto px-4 py-16 text-center">
           <div className="text-6xl mb-6">✅</div>
-          <h2 className="text-2xl font-bold text-gray-900 mb-3">{t('mint.alreadyHaveDID')}</h2>
-          <p className="text-gray-500 mb-4">
+          <h2 className="text-2xl font-bold text-[#e0e0e8] mb-3">{t('mint.alreadyHaveDID')}</h2>
+          <p className="text-[#6b6b80] mb-4">
             {t('mint.alreadyHaveDesc')}
           </p>
           <div className="flex items-center justify-center gap-3">
             <button
               onClick={() => navigate(`/profile/${userTokenId}`)}
-              className="px-6 py-3 bg-gradient-to-r from-emerald-600 to-teal-500 text-white font-semibold rounded-xl hover:from-emerald-700 hover:to-teal-600 transition-all shadow-lg"
+              className="px-6 py-3 bg-gradient-to-r from-[#10b981] to-[#0a2e2a] text-[#e0e0e8] font-semibold rounded-xl hover:from-[#059669] hover:to-[#0a2e2a] transition-all shadow-glow-cyan"
             >
               {t('mint.viewProfile')}
             </button>
             <button
               onClick={() => navigate('/')}
-              className="px-6 py-3 bg-gray-100 text-gray-700 font-semibold rounded-xl hover:bg-gray-200 transition-all"
+              className="px-6 py-3 bg-[#16162a] text-[#a0a0b0] font-semibold rounded-xl hover:bg-[#1a1a2e] transition-all"
             >
               {t('mint.goHome')}
             </button>
@@ -111,7 +111,7 @@ export function MintPage() {
     return (
       <div className="max-w-2xl mx-auto px-4 py-16 text-center">
         <div className="animate-spin w-8 h-8 border-2 border-emerald-600 border-t-transparent rounded-full mx-auto" />
-        <p className="text-gray-500 mt-4">{t('mint.validating')}</p>
+        <p className="text-[#6b6b80] mt-4">{t('mint.validating')}</p>
       </div>
     )
   }
@@ -120,8 +120,8 @@ export function MintPage() {
     return (
       <div className="max-w-2xl mx-auto px-4 py-16 text-center">
         <div className="text-6xl mb-4">❌</div>
-        <h2 className="text-xl font-semibold text-gray-900 mb-2">{t('mint.invalidInvite')}</h2>
-        <p className="text-gray-500">
+        <h2 className="text-xl font-semibold text-[#e0e0e8] mb-2">{t('mint.invalidInvite')}</h2>
+        <p className="text-[#6b6b80]">
           {t('mint.inviterNotFound', { id: inviterFromUrl })}
         </p>
       </div>
@@ -131,100 +131,100 @@ export function MintPage() {
   if (successTokenId !== null) {
     return (
       <div className="max-w-2xl mx-auto px-4 py-16 text-center">
-        <div className="w-20 h-20 mx-auto mb-6 bg-emerald-100 rounded-full flex items-center justify-center">
-          <svg className="w-10 h-10 text-emerald-600" fill="none" viewBox="0 0 24 24" stroke="currentColor">
+        <div className="w-20 h-20 mx-auto mb-6 bg-[#0f3d22] rounded-full flex items-center justify-center">
+          <svg className="w-10 h-10 text-[#10b981]" fill="none" viewBox="0 0 24 24" stroke="currentColor">
             <path strokeLinecap="round" strokeLinejoin="round" strokeWidth={2} d="M5 13l4 4L19 7" />
           </svg>
         </div>
-        <h2 className="text-2xl font-bold text-gray-900 mb-2">{t('create.success')}</h2>
-        <p className="text-gray-500 mb-6">{t('mint.successDesc')}</p>
+        <h2 className="text-2xl font-bold text-[#e0e0e8] mb-2">{t('create.success')}</h2>
+        <p className="text-[#6b6b80] mb-6">{t('mint.successDesc')}</p>
         <div className="animate-spin w-6 h-6 border-2 border-emerald-600 border-t-transparent rounded-full mx-auto" />
       </div>
     )
   }
 
   return (
-    <div className="min-h-screen bg-gradient-to-br from-emerald-50 via-white to-teal-50">
+    <div className="min-h-screen bg-gradient-to-br from-[#0a2e1a] via-[#12121a] to-[#0a2e2a]">
       <div className="max-w-2xl mx-auto px-4 sm:px-6 lg:px-8 py-12">
         <div className="text-center mb-10">
           <div className="text-5xl mb-4">🌾</div>
-          <h1 className="text-3xl font-bold text-gray-900 mb-2">
+          <h1 className="text-3xl font-bold text-[#e0e0e8] mb-2">
             {t('mint.invitedTitle')}
           </h1>
-          <p className="text-gray-500">
+          <p className="text-[#6b6b80]">
             {t('mint.invitedDesc')}
           </p>
         </div>
 
         {inviterName && (
-          <div className="bg-white rounded-2xl border border-emerald-100 shadow-sm p-5 mb-8 flex items-center gap-4">
-            <div className="w-12 h-12 bg-gradient-to-br from-emerald-400 to-teal-500 rounded-full flex items-center justify-center text-white font-bold text-lg">
+          <div className="bg-[#12121a] rounded-2xl border border-emerald-100 shadow-glow-cyan p-5 mb-8 flex items-center gap-4">
+            <div className="w-12 h-12 bg-gradient-to-br from-[#10b981] to-[#0a2e2a] rounded-full flex items-center justify-center text-[#e0e0e8] font-bold text-lg">
               {inviterName.charAt(0)?.toUpperCase() ?? '#'}
             </div>
             <div>
-              <p className="text-sm text-gray-500">{t('mint.invitedBy')}</p>
-              <p className="font-semibold text-gray-900">{inviterName}</p>
+              <p className="text-sm text-[#6b6b80]">{t('mint.invitedBy')}</p>
+              <p className="font-semibold text-[#e0e0e8]">{inviterName}</p>
             </div>
-            <div className="ml-auto text-xs bg-emerald-50 text-emerald-700 px-3 py-1 rounded-full font-medium">
+            <div className="ml-auto text-xs bg-[#0a2e1a] text-emerald-700 px-3 py-1 rounded-full font-medium">
               DID #{inviterFromUrl}
             </div>
           </div>
         )}
 
-        <div className="bg-white rounded-2xl border border-gray-100 shadow-sm p-6 sm:p-8">
-          <h2 className="text-xl font-bold text-gray-900 mb-6">{t('create.title')}</h2>
+        <div className="bg-[#12121a] rounded-2xl border border-gray-100 shadow-glow-cyan p-6 sm:p-8">
+          <h2 className="text-xl font-bold text-[#e0e0e8] mb-6">{t('create.title')}</h2>
 
           <div className="space-y-5">
             <div>
-              <label className="block text-sm font-medium text-gray-700 mb-1">
+              <label className="block text-sm font-medium text-[#a0a0b0] mb-1">
                 {t('create.name')} <span className="text-red-500">*</span>
               </label>
               <input
                 type="text"
                 value={name}
                 onChange={(e) => setName(e.target.value)}
-                className="w-full px-4 py-3 border border-gray-300 rounded-xl focus:ring-2 focus:ring-emerald-500 focus:border-emerald-500 outline-none transition-shadow"
+                className="w-full px-4 py-3 border border-[#333355] rounded-xl focus:ring-2 focus:ring-[#0a2e1a]0 focus:border-emerald-500 outline-none transition-shadow"
                 placeholder="Your display name"
               />
             </div>
             <div>
-              <label className="block text-sm font-medium text-gray-700 mb-1">{t('create.bio')}</label>
+              <label className="block text-sm font-medium text-[#a0a0b0] mb-1">{t('create.bio')}</label>
               <textarea
                 value={bio}
                 onChange={(e) => setBio(e.target.value)}
                 rows={3}
-                className="w-full px-4 py-3 border border-gray-300 rounded-xl focus:ring-2 focus:ring-emerald-500 focus:border-emerald-500 outline-none transition-shadow resize-none"
+                className="w-full px-4 py-3 border border-[#333355] rounded-xl focus:ring-2 focus:ring-[#0a2e1a]0 focus:border-emerald-500 outline-none transition-shadow resize-none"
                 placeholder="Tell others about yourself"
               />
             </div>
             <div>
-              <label className="block text-sm font-medium text-gray-700 mb-1">{t('create.avatar')}</label>
+              <label className="block text-sm font-medium text-[#a0a0b0] mb-1">{t('create.avatar')}</label>
               <input
                 type="text"
                 value={avatar}
                 onChange={(e) => setAvatar(e.target.value)}
-                className="w-full px-4 py-3 border border-gray-300 rounded-xl focus:ring-2 focus:ring-emerald-500 focus:border-emerald-500 outline-none transition-shadow"
+                className="w-full px-4 py-3 border border-[#333355] rounded-xl focus:ring-2 focus:ring-[#0a2e1a]0 focus:border-emerald-500 outline-none transition-shadow"
                 placeholder="https://your-avatar-url.com/photo.png"
               />
             </div>
             <div>
-              <label className="block text-sm font-medium text-gray-700 mb-1">{t('create.urls')}</label>
+              <label className="block text-sm font-medium text-[#a0a0b0] mb-1">{t('create.urls')}</label>
               <input
                 type="text"
                 value={urls}
                 onChange={(e) => setUrls(e.target.value)}
-                className="w-full px-4 py-3 border border-gray-300 rounded-xl focus:ring-2 focus:ring-emerald-500 focus:border-emerald-500 outline-none transition-shadow"
+                className="w-full px-4 py-3 border border-[#333355] rounded-xl focus:ring-2 focus:ring-[#0a2e1a]0 focus:border-emerald-500 outline-none transition-shadow"
                 placeholder="https://twitter.com/..., https://github.com/..."
               />
             </div>
 
             {inviterFromUrl && (
-              <div className="p-4 bg-emerald-50 rounded-xl">
+              <div className="p-4 bg-[#0a2e1a] rounded-xl">
                 <label className="block text-sm font-medium text-emerald-800 mb-1">
                   {t('create.inviter')}
                 </label>
                 <p className="text-emerald-700 font-medium">DID #{inviterFromUrl}</p>
-                <p className="text-xs text-emerald-600 mt-1">{t('mint.cannotChange')}</p>
+                <p className="text-xs text-[#10b981] mt-1">{t('mint.cannotChange')}</p>
               </div>
             )}
 
@@ -252,7 +252,7 @@ export function MintPage() {
           <button
             onClick={handleSubmit}
             disabled={loading || !name || !inviterLoadingDone}
-            className="mt-6 w-full px-6 py-4 bg-gradient-to-r from-emerald-600 to-teal-500 text-white font-semibold rounded-xl hover:from-emerald-700 hover:to-teal-600 disabled:opacity-50 disabled:cursor-not-allowed transition-all shadow-lg shadow-emerald-200 hover:shadow-xl hover:shadow-emerald-300 transform hover:-translate-y-0.5"
+            className="mt-6 w-full px-6 py-4 bg-gradient-to-r from-[#10b981] to-[#0a2e2a] text-[#e0e0e8] font-semibold rounded-xl hover:from-[#059669] hover:to-[#0a2e2a] disabled:opacity-50 disabled:cursor-not-allowed transition-all shadow-glow-cyan shadow-[#10b981]/20 hover:shadow-glow-cyan hover:shadow-[#34d399]/30 transform hover:-translate-y-0.5"
           >
             {loading ? (
               <span className="flex items-center justify-center gap-2">
@@ -264,13 +264,13 @@ export function MintPage() {
             )}
           </button>
 
-          <p className="text-xs text-gray-400 text-center mt-4">
+          <p className="text-xs text-[#555570] text-center mt-4">
             {t('mint.terms')}
           </p>
         </div>
 
         <div className="text-center mt-6">
-          <Link to="/" className="text-sm text-gray-400 hover:text-emerald-600 transition-colors">
+          <Link to="/" className="text-sm text-[#555570] hover:text-[#10b981] transition-colors">
             {t('mint.backHome')}
           </Link>
         </div>

@@ -43,11 +43,11 @@ export function InvitePage() {
 
   if (!isConnected) {
     return (
-      <div className="min-h-screen bg-gradient-to-br from-emerald-50 via-white to-teal-50 flex items-center justify-center">
+      <div className="min-h-screen bg-gradient-to-br from-[#0a2e1a] via-[#12121a] to-[#0a2e2a] flex items-center justify-center">
         <div className="max-w-md mx-auto px-4 py-16 text-center">
           <div className="text-6xl mb-6">🔗</div>
-          <h2 className="text-2xl font-bold text-gray-900 mb-3">Connect Your Wallet</h2>
-          <p className="text-gray-500 mb-8">Connect your wallet to view your invite link and grow your network.</p>
+          <h2 className="text-2xl font-bold text-[#e0e0e8] mb-3">Connect Your Wallet</h2>
+          <p className="text-[#6b6b80] mb-8">Connect your wallet to view your invite link and grow your network.</p>
           <ConnectButton variant="cta" />
         </div>
       </div>
@@ -59,13 +59,13 @@ export function InvitePage() {
     return (
       <div className="max-w-2xl mx-auto px-4 py-16 text-center">
         <div className="text-6xl mb-4">🌱</div>
-        <h2 className="text-xl font-semibold text-gray-900 mb-2">{t('invite.noProfile')}</h2>
-        <p className="text-gray-500 mb-6">
+        <h2 className="text-xl font-semibold text-[#e0e0e8] mb-2">{t('invite.noProfile')}</h2>
+        <p className="text-[#6b6b80] mb-6">
           You need a DID profile before you can invite others. Create one now to get your invite link!
         </p>
         <Link
           to="/mint"
-          className="inline-flex items-center gap-2 px-6 py-3 bg-emerald-600 text-white rounded-xl hover:bg-emerald-700 transition-colors font-medium shadow-lg shadow-emerald-200"
+          className="inline-flex items-center gap-2 px-6 py-3 bg-[#10b981] text-[#e0e0e8] rounded-xl hover:bg-[#059669] transition-colors font-medium shadow-glow-cyan shadow-[#10b981]/20"
         >
           <svg className="w-5 h-5" fill="none" viewBox="0 0 24 24" stroke="currentColor">
             <path strokeLinecap="round" strokeLinejoin="round" strokeWidth={2} d="M12 4v16m8-8H4" />
@@ -80,17 +80,17 @@ export function InvitePage() {
     <div className="max-w-3xl mx-auto px-4 sm:px-6 lg:px-8 py-12">
       <div className="text-center mb-10">
         <div className="text-5xl mb-4">🔗</div>
-        <h1 className="text-3xl font-bold text-gray-900 mb-2">{t('invite.title')}</h1>
-        <p className="text-gray-500">{t('invite.description')}</p>
+        <h1 className="text-3xl font-bold text-[#e0e0e8] mb-2">{t('invite.title')}</h1>
+        <p className="text-[#6b6b80]">{t('invite.description')}</p>
       </div>
 
       {/* Your Invite Link */}
-      <div className="bg-white rounded-2xl border border-gray-100 shadow-sm p-6 mb-8">
+      <div className="bg-[#12121a] rounded-2xl border border-gray-100 shadow-glow-cyan p-6 mb-8">
         <div className="flex items-center gap-2 mb-4">
           <span className="text-emerald-500">✅</span>
-          <h2 className="text-lg font-semibold text-gray-900">{t('invite.yourLink')}</h2>
+          <h2 className="text-lg font-semibold text-[#e0e0e8]">{t('invite.yourLink')}</h2>
           {userTokenId && (
-            <span className="text-xs bg-emerald-50 text-emerald-700 px-2.5 py-0.5 rounded-full font-medium ml-1">
+            <span className="text-xs bg-[#0a2e1a] text-emerald-700 px-2.5 py-0.5 rounded-full font-medium ml-1">
               DID #{String(userTokenId)}
             </span>
           )}
@@ -98,17 +98,17 @@ export function InvitePage() {
 
         {userTokenId ? (
           <>
-            <p className="text-sm text-gray-500 mb-4">
+            <p className="text-sm text-[#6b6b80] mb-4">
               Share this link with friends to grow your network:
             </p>
-            <div className="p-4 bg-gray-50 rounded-xl">
+            <div className="p-4 bg-[#12121a] rounded-xl">
               <div className="flex items-center gap-3">
-                <code className="flex-1 text-sm text-gray-700 break-all font-mono">
+                <code className="flex-1 text-sm text-[#a0a0b0] break-all font-mono">
                   {inviteUrl}
                 </code>
                 <button
                   onClick={handleCopy}
-                  className="shrink-0 px-4 py-2 bg-emerald-600 text-white rounded-lg hover:bg-emerald-700 transition-colors text-sm font-medium flex items-center gap-1.5"
+                  className="shrink-0 px-4 py-2 bg-[#10b981] text-[#e0e0e8] rounded-lg hover:bg-[#059669] transition-colors text-sm font-medium flex items-center gap-1.5"
                 >
                   {copied ? (
                     <>
@@ -132,7 +132,7 @@ export function InvitePage() {
         ) : (
           <div className="text-center py-4">
             <div className="animate-spin w-6 h-6 border-2 border-emerald-600 border-t-transparent rounded-full mx-auto" />
-            <p className="text-sm text-gray-400 mt-2">Detecting your DID...</p>
+            <p className="text-sm text-[#555570] mt-2">Detecting your DID...</p>
           </div>
         )}
       </div>
@@ -145,9 +145,9 @@ export function InvitePage() {
       )}
 
       {/* Tips */}
-      <div className="bg-white rounded-2xl border border-gray-100 shadow-sm p-6">
-        <h2 className="text-lg font-semibold text-gray-900 mb-4">Tips</h2>
-        <ul className="space-y-3 text-sm text-gray-600">
+      <div className="bg-[#12121a] rounded-2xl border border-gray-100 shadow-glow-cyan p-6">
+        <h2 className="text-lg font-semibold text-[#e0e0e8] mb-4">Tips</h2>
+        <ul className="space-y-3 text-sm text-[#808090]">
           <li className="flex items-start gap-2">
             <span className="text-emerald-500 mt-0.5">✓</span>
             Share your invite link on social media to grow your network

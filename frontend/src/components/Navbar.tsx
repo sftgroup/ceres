@@ -34,29 +34,32 @@ export function Navbar() {
   }, [chainMsg])
 
   return (
-    <nav className="bg-white/80 backdrop-blur-md border-b border-emerald-100 sticky top-0 z-50">
+    <nav className="bg-[#12121a]/80 backdrop-blur-md border-b border-emerald-100 sticky top-0 z-50">
       <div className="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8">
         <div className="flex items-center justify-between h-16">
           {/* Logo */}
           <Link to="/" className="flex items-center gap-2 group">
-            <div className="w-8 h-8 bg-gradient-to-br from-emerald-500 to-teal-600 rounded-lg flex items-center justify-center text-white font-bold text-sm shadow-md shadow-emerald-200 group-hover:shadow-lg transition-shadow">
+            <div className="w-8 h-8 bg-gradient-to-br from-[#0a2e1a] to-[#0a2e2a] rounded-lg flex items-center justify-center text-[#e0e0e8] font-bold text-sm shadow-glow-cyan shadow-[#10b981]/20 group-hover:shadow-glow-cyan transition-shadow">
               C
             </div>
-            <span className="text-xl font-bold text-gray-900 group-hover:text-emerald-600 transition-colors">
+            <span className="text-xl font-bold text-[#e0e0e8] group-hover:text-[#10b981] transition-colors">
               Ceres
             </span>
           </Link>
 
           {/* Nav Links */}
           <div className="hidden sm:flex items-center gap-6">
-            <Link to="/" className="text-gray-600 hover:text-emerald-600 transition-colors font-medium">
+            <Link to="/" className="text-[#808090] hover:text-[#10b981] transition-colors font-medium">
               {t('nav.home')}
             </Link>
-            <Link to="/search" className="text-gray-600 hover:text-emerald-600 transition-colors font-medium">
+            <Link to="/search" className="text-[#808090] hover:text-[#10b981] transition-colors font-medium">
               {t('nav.search')}
             </Link>
-            <Link to="/invite" className="text-gray-600 hover:text-emerald-600 transition-colors font-medium">
+            <Link to="/invite" className="text-[#808090] hover:text-[#10b981] transition-colors font-medium">
               {t('nav.invite')}
+            </Link>
+            <Link to="/developers" className="text-[#808090] hover:text-[#10b981] transition-colors font-medium">
+              SDK
             </Link>
           </div>
 
@@ -65,7 +68,7 @@ export function Navbar() {
             {/* Language toggle */}
             <button
               onClick={() => setLocale(locale === 'en' ? 'zh-TW' : 'en')}
-              className="text-xs px-2 py-1 rounded border border-gray-200 text-gray-500 hover:border-emerald-300 hover:text-emerald-600 transition-colors"
+              className="text-xs px-2 py-1 rounded border border-[#2a2a40] text-[#6b6b80] hover:border-[#10b981]/40 hover:text-[#10b981] transition-colors"
             >
               {locale === 'en' ? '中' : 'EN'}
             </button>
@@ -76,7 +79,7 @@ export function Navbar() {
                 <button
                   onClick={() => setChainMenuOpen(!chainMenuOpen)}
                   disabled={isSwitching}
-                  className="text-xs px-2.5 py-1.5 rounded-lg border border-gray-200 bg-white text-gray-600 hover:border-emerald-300 transition-colors flex items-center gap-1.5 disabled:opacity-50"
+                  className="text-xs px-2.5 py-1.5 rounded-lg border border-[#2a2a40] bg-[#12121a] text-[#808090] hover:border-[#10b981]/40 transition-colors flex items-center gap-1.5 disabled:opacity-50"
                 >
                   <span>{CHAIN_ICONS[chainId] ?? '⛓️'}</span>
                   <span className="font-medium">
@@ -93,7 +96,7 @@ export function Navbar() {
                       className="fixed inset-0 z-40"
                       onClick={() => setChainMenuOpen(false)}
                     />
-                    <div className="absolute right-0 top-full mt-1 bg-white border border-gray-200 rounded-xl shadow-lg z-50 py-1 min-w-[160px]">
+                    <div className="absolute right-0 top-full mt-1 bg-[#12121a] border border-[#2a2a40] rounded-xl shadow-glow-cyan z-50 py-1 min-w-[160px]">
                       {chains.map((c) => (
                         <button
                           key={c.id}
@@ -113,14 +116,14 @@ export function Navbar() {
                           }}
                           className={`w-full flex items-center gap-2 px-4 py-2 text-sm text-left transition-colors disabled:opacity-50 ${
                             c.id === chainId
-                              ? 'bg-emerald-50 text-emerald-700 font-medium'
-                              : 'text-gray-700 hover:bg-gray-50'
+                              ? 'bg-[#0a2e1a] text-emerald-700 font-medium'
+                              : 'text-[#a0a0b0] hover:bg-[#12121a]'
                           }`}
                         >
                           <span>{CHAIN_ICONS[c.id] ?? '⛓️'}</span>
                           <span>{CHAIN_LABELS[c.id] ?? c.name}</span>
                           {c.id === chainId && (
-                            <svg className="w-4 h-4 ml-auto text-emerald-600" fill="none" viewBox="0 0 24 24" stroke="currentColor">
+                            <svg className="w-4 h-4 ml-auto text-[#10b981]" fill="none" viewBox="0 0 24 24" stroke="currentColor">
                               <path strokeLinecap="round" strokeLinejoin="round" strokeWidth={2} d="M5 13l4 4L19 7" />
                             </svg>
                           )}
@@ -137,7 +140,7 @@ export function Navbar() {
               <div className="flex items-center gap-2">
                 <button
                   onClick={() => navigate('/invite')}
-                  className="text-sm px-3 py-1.5 rounded-lg bg-emerald-50 text-emerald-700 hover:bg-emerald-100 transition-colors font-medium"
+                  className="text-sm px-3 py-1.5 rounded-lg bg-[#0a2e1a] text-emerald-700 hover:bg-[#0f3d22] transition-colors font-medium"
                 >
                   {t('invite.title')}
                 </button>
@@ -153,9 +156,9 @@ export function Navbar() {
       {/* Chain switch toast */}
       {chainMsg && (
         <div
-          className={`fixed top-20 left-1/2 -translate-x-1/2 z-[200] px-4 py-2.5 rounded-xl shadow-lg text-sm font-medium transition-all ${
+          className={`fixed top-20 left-1/2 -translate-x-1/2 z-[200] px-4 py-2.5 rounded-xl shadow-glow-cyan text-sm font-medium transition-all ${
             chainMsg.ok
-              ? 'bg-emerald-600 text-white'
+              ? 'bg-[#10b981] text-white'
               : 'bg-red-500 text-white'
           }`}
         >

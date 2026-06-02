@@ -6,7 +6,7 @@ interface LevelBadgeProps {
 }
 
 const LEVEL_COLORS: Record<number, { bg: string; text: string; border: string; glow: string }> = {
-  0: { bg: 'bg-gray-100', text: 'text-gray-600', border: 'border-gray-300', glow: '' },
+  0: { bg: 'bg-[#16162a]', text: 'text-[#808090]', border: 'border-[#333355]', glow: '' },
   1: { bg: 'bg-amber-50', text: 'text-amber-700', border: 'border-amber-300', glow: '' },
   2: { bg: 'bg-slate-50', text: 'text-slate-500', border: 'border-slate-300', glow: '' },
   3: { bg: 'bg-yellow-50', text: 'text-yellow-700', border: 'border-yellow-400', glow: 'shadow-[0_0_8px_rgba(255,215,0,0.3)]' },

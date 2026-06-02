@@ -83,8 +83,8 @@ export function AdminPage() {
     return (
       <div className="max-w-2xl mx-auto px-4 py-16 text-center">
         <div className="text-6xl mb-4">🔒</div>
-        <h2 className="text-xl font-semibold text-gray-900 mb-2">{t('admin.connectWallet')}</h2>
-        <p className="text-gray-500">{t('admin.connectDesc')}</p>
+        <h2 className="text-xl font-semibold text-[#e0e0e8] mb-2">{t('admin.connectWallet')}</h2>
+        <p className="text-[#6b6b80]">{t('admin.connectDesc')}</p>
       </div>
     )
   }
@@ -93,8 +93,8 @@ export function AdminPage() {
     return (
       <div className="max-w-2xl mx-auto px-4 py-16 text-center">
         <div className="text-6xl mb-4">🚫</div>
-        <h2 className="text-xl font-semibold text-gray-900 mb-2">{t('admin.accessDenied')}</h2>
-        <p className="text-gray-500">
+        <h2 className="text-xl font-semibold text-[#e0e0e8] mb-2">{t('admin.accessDenied')}</h2>
+        <p className="text-[#6b6b80]">
           {t('admin.notOwner')}
         </p>
       </div>
@@ -105,8 +105,8 @@ export function AdminPage() {
     <div className="max-w-2xl mx-auto px-4 sm:px-6 lg:px-8 py-12">
       <div className="text-center mb-10">
         <div className="text-5xl mb-4">⚙️</div>
-        <h1 className="text-3xl font-bold text-gray-900 mb-2">{t('admin.title')}</h1>
-        <p className="text-gray-500">{t('admin.desc')}</p>
+        <h1 className="text-3xl font-bold text-[#e0e0e8] mb-2">{t('admin.title')}</h1>
+        <p className="text-[#6b6b80]">{t('admin.desc')}</p>
       </div>
 
       {error && (
@@ -116,24 +116,24 @@ export function AdminPage() {
       )}
 
       {/* Mint Fee Toggle */}
-      <div className="bg-white rounded-2xl border border-gray-100 shadow-sm p-6 mb-6">
-        <h2 className="text-lg font-semibold text-gray-900 mb-4">{t('admin.mintFee')}</h2>
+      <div className="bg-[#12121a] rounded-2xl border border-gray-100 shadow-glow-cyan p-6 mb-6">
+        <h2 className="text-lg font-semibold text-[#e0e0e8] mb-4">{t('admin.mintFee')}</h2>
 
         <div className="flex items-center justify-between mb-3">
-          <span className="text-sm text-gray-600">{t('admin.status')}</span>
+          <span className="text-sm text-[#808090]">{t('admin.status')}</span>
           <div className="flex items-center gap-3">
-            <span className={`text-sm font-medium ${mintFeeEnabled ? 'text-emerald-600' : 'text-gray-400'}`}>
+            <span className={`text-sm font-medium ${mintFeeEnabled ? 'text-[#10b981]' : 'text-[#555570]'}`}>
               {mintFeeEnabled ? t('admin.enabled') : t('admin.disabled')}
             </span>
             <button
               onClick={handleToggleMintFee}
               disabled={loading === 'toggle'}
               className={`relative inline-flex h-6 w-11 items-center rounded-full transition-colors disabled:opacity-50 ${
-                mintFeeEnabled ? 'bg-emerald-600' : 'bg-gray-300'
+                mintFeeEnabled ? 'bg-[#10b981]' : 'bg-gray-300'
               }`}
             >
               <span
-                className={`inline-block h-4 w-4 transform rounded-full bg-white transition-transform ${
+                className={`inline-block h-4 w-4 transform rounded-full bg-[#12121a] transition-transform ${
                   mintFeeEnabled ? 'translate-x-6' : 'translate-x-1'
                 }`}
               />
@@ -142,16 +142,16 @@ export function AdminPage() {
         </div>
 
         <div className="flex items-center justify-between text-sm">
-          <span className="text-gray-500">{t('admin.currentFee')}</span>
-          <span className="font-semibold text-gray-900">
+          <span className="text-[#6b6b80]">{t('admin.currentFee')}</span>
+          <span className="font-semibold text-[#e0e0e8]">
             {formatEther(mintFeeWei)} ETH
           </span>
         </div>
       </div>
 
       {/* Set Fee Amount */}
-      <div className="bg-white rounded-2xl border border-gray-100 shadow-sm p-6 mb-6">
-        <h2 className="text-lg font-semibold text-gray-900 mb-4">{t('admin.setFee')}</h2>
+      <div className="bg-[#12121a] rounded-2xl border border-gray-100 shadow-glow-cyan p-6 mb-6">
+        <h2 className="text-lg font-semibold text-[#e0e0e8] mb-4">{t('admin.setFee')}</h2>
 
         <div className="flex gap-3">
           <div className="flex-1 relative">
@@ -159,17 +159,17 @@ export function AdminPage() {
               type="number"
               value={feeInput}
               onChange={(e) => setFeeInput(e.target.value)}
-              className="w-full px-4 py-3 pr-16 border border-gray-300 rounded-xl focus:ring-2 focus:ring-emerald-500 focus:border-emerald-500 outline-none text-lg"
+              className="w-full px-4 py-3 pr-16 border border-[#333355] rounded-xl focus:ring-2 focus:ring-[#0a2e1a]0 focus:border-emerald-500 outline-none text-lg"
               placeholder="0.001"
               step="0.001"
               min="0"
             />
-            <span className="absolute right-3 top-1/2 -translate-y-1/2 text-gray-400 font-medium">ETH</span>
+            <span className="absolute right-3 top-1/2 -translate-y-1/2 text-[#555570] font-medium">ETH</span>
           </div>
           <button
             onClick={handleSetFee}
             disabled={loading === 'setFee' || !feeInput}
-            className="px-6 py-3 bg-emerald-600 text-white rounded-xl hover:bg-emerald-700 disabled:opacity-50 disabled:cursor-not-allowed transition-colors font-medium whitespace-nowrap"
+            className="px-6 py-3 bg-[#10b981] text-[#e0e0e8] rounded-xl hover:bg-[#059669] disabled:opacity-50 disabled:cursor-not-allowed transition-colors font-medium whitespace-nowrap"
           >
             {loading === 'setFee' ? (
               <span className="flex items-center gap-2">
@@ -184,12 +184,12 @@ export function AdminPage() {
       </div>
 
       {/* Withdraw */}
-      <div className="bg-white rounded-2xl border border-gray-100 shadow-sm p-6">
-        <h2 className="text-lg font-semibold text-gray-900 mb-4">{t('admin.withdraw')}</h2>
+      <div className="bg-[#12121a] rounded-2xl border border-gray-100 shadow-glow-cyan p-6">
+        <h2 className="text-lg font-semibold text-[#e0e0e8] mb-4">{t('admin.withdraw')}</h2>
 
         <div className="flex items-center justify-between mb-4">
-          <span className="text-sm text-gray-500">{t('admin.contractBalance')}</span>
-          <span className="text-lg font-bold text-gray-900">
+          <span className="text-sm text-[#6b6b80]">{t('admin.contractBalance')}</span>
+          <span className="text-lg font-bold text-[#e0e0e8]">
             {formatEther(contractBalance)} ETH
           </span>
         </div>
@@ -197,7 +197,7 @@ export function AdminPage() {
         <button
           onClick={handleWithdraw}
           disabled={loading === 'withdraw' || contractBalance === 0n}
-          className="w-full px-6 py-3 bg-amber-600 text-white rounded-xl hover:bg-amber-700 disabled:opacity-50 disabled:cursor-not-allowed transition-colors font-medium"
+          className="w-full px-6 py-3 bg-amber-600 text-[#e0e0e8] rounded-xl hover:bg-amber-700 disabled:opacity-50 disabled:cursor-not-allowed transition-colors font-medium"
         >
           {loading === 'withdraw' ? (
             <span className="flex items-center justify-center gap-2">
@@ -210,7 +210,7 @@ export function AdminPage() {
         </button>
 
         {contractBalance === 0n && (
-          <p className="text-xs text-gray-400 text-center mt-3">
+          <p className="text-xs text-[#555570] text-center mt-3">
             {t('admin.noBalance')}
           </p>
         )}

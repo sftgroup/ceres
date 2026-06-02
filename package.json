@@ -1,0 +1,8 @@
+{
+  "name": "ceres-monorepo",
+  "private": true,
+  "workspaces": [
+    "frontend",
+    "sdk"
+  ]
+}

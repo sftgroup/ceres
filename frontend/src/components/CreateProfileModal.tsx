@@ -59,11 +59,11 @@ export function CreateProfileModal({ open, onClose, onCreated }: CreateProfileMo
   return (
     <div className="fixed inset-0 z-50 flex items-center justify-center bg-black/50 backdrop-blur-sm" onClick={onClose}>
       <div
-        className="bg-white rounded-2xl shadow-2xl max-w-md w-full mx-4 p-6 max-h-[90vh] overflow-y-auto"
+        className="bg-[#12121a] rounded-2xl shadow-glow-cyan max-w-md w-full mx-4 p-6 max-h-[90vh] overflow-y-auto"
         onClick={(e) => e.stopPropagation()}
       >
-        <h2 className="text-2xl font-bold text-gray-900 mb-1">{t('create.title')}</h2>
-        <p className="text-sm text-gray-500 mb-6">
+        <h2 className="text-2xl font-bold text-[#e0e0e8] mb-1">{t('create.title')}</h2>
+        <p className="text-sm text-[#6b6b80] mb-6">
           {address ? `${address.slice(0, 6)}...${address.slice(-4)}` : ''}
         </p>
 
@@ -74,18 +74,18 @@ export function CreateProfileModal({ open, onClose, onCreated }: CreateProfileMo
                 <path strokeLinecap="round" strokeLinejoin="round" strokeWidth={2} d="M12 9v2m0 4h.01m-6.938 4h13.856c1.54 0 2.502-1.667 1.732-2.5L13.732 4c-.77-.833-1.964-.833-2.732 0L4.082 16.5c-.77.833.192 2.5 1.732 2.5z" />
               </svg>
             </div>
-            <h3 className="text-lg font-semibold text-gray-900">{t('create.alreadyHave')}</h3>
-            <p className="text-sm text-gray-500 mt-2">{t('create.alreadyHaveDesc')}</p>
+            <h3 className="text-lg font-semibold text-[#e0e0e8]">{t('create.alreadyHave')}</h3>
+            <p className="text-sm text-[#6b6b80] mt-2">{t('create.alreadyHaveDesc')}</p>
             <div className="mt-6 flex gap-3 justify-center">
               <Link
                 to="/search"
-                className="px-6 py-2 bg-emerald-600 text-white rounded-lg hover:bg-emerald-700 transition-colors font-medium"
+                className="px-6 py-2 bg-[#10b981] text-[#e0e0e8] rounded-lg hover:bg-[#059669] transition-colors font-medium"
               >
                 {t('create.searchProfiles')}
               </Link>
               <button
                 onClick={onClose}
-                className="px-6 py-2 border border-gray-300 text-gray-700 rounded-lg hover:bg-gray-50 transition-colors font-medium"
+                className="px-6 py-2 border border-[#333355] text-[#a0a0b0] rounded-lg hover:bg-[#12121a] transition-colors font-medium"
               >
                 {t('create.close')}
               </button>
@@ -93,18 +93,18 @@ export function CreateProfileModal({ open, onClose, onCreated }: CreateProfileMo
           </div>
         ) : success !== null ? (
           <div className="text-center py-6">
-            <div className="w-14 h-14 mx-auto mb-3 bg-emerald-100 rounded-full flex items-center justify-center">
-              <svg className="w-7 h-7 text-emerald-600" fill="none" viewBox="0 0 24 24" stroke="currentColor">
+            <div className="w-14 h-14 mx-auto mb-3 bg-[#0f3d22] rounded-full flex items-center justify-center">
+              <svg className="w-7 h-7 text-[#10b981]" fill="none" viewBox="0 0 24 24" stroke="currentColor">
                 <path strokeLinecap="round" strokeLinejoin="round" strokeWidth={2} d="M5 13l4 4L19 7" />
               </svg>
             </div>
-            <h3 className="text-lg font-semibold text-gray-900">{t('create.created')}</h3>
-            <p className="text-sm text-gray-500 mt-1">
-              DID #<span className="font-mono text-emerald-600">{String(success)}</span>
+            <h3 className="text-lg font-semibold text-[#e0e0e8]">{t('create.created')}</h3>
+            <p className="text-sm text-[#6b6b80] mt-1">
+              DID #<span className="font-mono text-[#10b981]">{String(success)}</span>
             </p>
             <button
               onClick={onClose}
-              className="mt-4 px-8 py-2 bg-emerald-600 text-white rounded-lg hover:bg-emerald-700 transition-colors font-medium"
+              className="mt-4 px-8 py-2 bg-[#10b981] text-[#e0e0e8] rounded-lg hover:bg-[#059669] transition-colors font-medium"
             >
               {t('create.done')}
             </button>
@@ -113,52 +113,52 @@ export function CreateProfileModal({ open, onClose, onCreated }: CreateProfileMo
           <>
             <div className="space-y-4">
               <div>
-                <label className="block text-sm font-medium text-gray-700 mb-1">{t('create.name')}</label>
+                <label className="block text-sm font-medium text-[#a0a0b0] mb-1">{t('create.name')}</label>
                 <input
                   type="text"
                   value={name}
                   onChange={(e) => setName(e.target.value)}
-                  className="w-full px-3 py-2 border border-gray-300 rounded-lg focus:ring-2 focus:ring-emerald-500 focus:border-emerald-500 outline-none transition-shadow"
+                  className="w-full px-3 py-2 border border-[#333355] rounded-lg focus:ring-2 focus:ring-[#0a2e1a]0 focus:border-emerald-500 outline-none transition-shadow"
                   placeholder="Your name"
                 />
               </div>
               <div>
-                <label className="block text-sm font-medium text-gray-700 mb-1">{t('create.bio')}</label>
+                <label className="block text-sm font-medium text-[#a0a0b0] mb-1">{t('create.bio')}</label>
                 <textarea
                   value={bio}
                   onChange={(e) => setBio(e.target.value)}
                   rows={3}
-                  className="w-full px-3 py-2 border border-gray-300 rounded-lg focus:ring-2 focus:ring-emerald-500 focus:border-emerald-500 outline-none transition-shadow resize-none"
+                  className="w-full px-3 py-2 border border-[#333355] rounded-lg focus:ring-2 focus:ring-[#0a2e1a]0 focus:border-emerald-500 outline-none transition-shadow resize-none"
                   placeholder="Tell others about yourself"
                 />
               </div>
               <div>
-                <label className="block text-sm font-medium text-gray-700 mb-1">{t('create.avatar')}</label>
+                <label className="block text-sm font-medium text-[#a0a0b0] mb-1">{t('create.avatar')}</label>
                 <input
                   type="text"
                   value={avatar}
                   onChange={(e) => setAvatar(e.target.value)}
-                  className="w-full px-3 py-2 border border-gray-300 rounded-lg focus:ring-2 focus:ring-emerald-500 focus:border-emerald-500 outline-none transition-shadow"
+                  className="w-full px-3 py-2 border border-[#333355] rounded-lg focus:ring-2 focus:ring-[#0a2e1a]0 focus:border-emerald-500 outline-none transition-shadow"
                   placeholder="https://..."
                 />
               </div>
               <div>
-                <label className="block text-sm font-medium text-gray-700 mb-1">{t('create.urls')}</label>
+                <label className="block text-sm font-medium text-[#a0a0b0] mb-1">{t('create.urls')}</label>
                 <input
                   type="text"
                   value={urls}
                   onChange={(e) => setUrls(e.target.value)}
-                  className="w-full px-3 py-2 border border-gray-300 rounded-lg focus:ring-2 focus:ring-emerald-500 focus:border-emerald-500 outline-none transition-shadow"
+                  className="w-full px-3 py-2 border border-[#333355] rounded-lg focus:ring-2 focus:ring-[#0a2e1a]0 focus:border-emerald-500 outline-none transition-shadow"
                   placeholder="https://twitter.com/..., https://github.com/..."
                 />
               </div>
               <div>
-                <label className="block text-sm font-medium text-gray-700 mb-1">{t('create.inviter')}</label>
+                <label className="block text-sm font-medium text-[#a0a0b0] mb-1">{t('create.inviter')}</label>
                 <input
                   type="number"
                   value={inviter}
                   onChange={(e) => setInviter(e.target.value)}
-                  className="w-full px-3 py-2 border border-gray-300 rounded-lg focus:ring-2 focus:ring-emerald-500 focus:border-emerald-500 outline-none transition-shadow"
+                  className="w-full px-3 py-2 border border-[#333355] rounded-lg focus:ring-2 focus:ring-[#0a2e1a]0 focus:border-emerald-500 outline-none transition-shadow"
                   placeholder="0"
                 />
               </div>
@@ -182,14 +182,14 @@ export function CreateProfileModal({ open, onClose, onCreated }: CreateProfileMo
             <div className="mt-6 flex gap-3">
               <button
                 onClick={onClose}
-                className="flex-1 px-4 py-2 border border-gray-300 text-gray-700 rounded-lg hover:bg-gray-50 transition-colors font-medium"
+                className="flex-1 px-4 py-2 border border-[#333355] text-[#a0a0b0] rounded-lg hover:bg-[#12121a] transition-colors font-medium"
               >
                 {t('profile.cancel')}
               </button>
               <button
                 onClick={handleSubmit}
                 disabled={loading || !name}
-                className="flex-1 px-4 py-2 bg-emerald-600 text-white rounded-lg hover:bg-emerald-700 disabled:opacity-50 disabled:cursor-not-allowed transition-colors font-medium"
+                className="flex-1 px-4 py-2 bg-[#10b981] text-[#e0e0e8] rounded-lg hover:bg-[#059669] disabled:opacity-50 disabled:cursor-not-allowed transition-colors font-medium"
               >
                 {loading ? t('create.processing') : t('create.submit')}
               </button>

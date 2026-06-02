@@ -39,8 +39,8 @@ export function SearchPage() {
   return (
     <div className="max-w-4xl mx-auto px-4 sm:px-6 lg:px-8 py-8">
       <div className="text-center mb-10">
-        <h1 className="text-3xl font-bold text-gray-900 mb-2">{t('search.title')}</h1>
-        <p className="text-gray-500">
+        <h1 className="text-3xl font-bold text-[#e0e0e8] mb-2">{t('search.title')}</h1>
+        <p className="text-[#6b6b80]">
           {maxProfiles > 0 ? t('search.profileCount', { count: maxProfiles }) : t('search.explore')}
         </p>
       </div>
@@ -50,7 +50,7 @@ export function SearchPage() {
         <div className="flex gap-3">
           <div className="relative flex-1">
             <svg
-              className="absolute left-3.5 top-1/2 -translate-y-1/2 w-5 h-5 text-gray-400"
+              className="absolute left-3.5 top-1/2 -translate-y-1/2 w-5 h-5 text-[#555570]"
               fill="none"
               viewBox="0 0 24 24"
               stroke="currentColor"
@@ -62,13 +62,13 @@ export function SearchPage() {
               value={query}
               onChange={(e) => setQuery(e.target.value)}
               onKeyDown={(e) => e.key === 'Enter' && handleSearch()}
-              className="w-full pl-11 pr-4 py-3 border border-gray-300 rounded-xl focus:ring-2 focus:ring-emerald-500 focus:border-emerald-500 outline-none text-base"
+              className="w-full pl-11 pr-4 py-3 border border-[#333355] rounded-xl focus:ring-2 focus:ring-[#0a2e1a]0 focus:border-emerald-500 outline-none text-base"
               placeholder={t('search.placeholder')}
             />
           </div>
           <button
             onClick={handleSearch}
-            className="px-6 py-3 bg-emerald-600 text-white rounded-xl hover:bg-emerald-700 transition-colors font-medium"
+            className="px-6 py-3 bg-[#10b981] text-[#e0e0e8] rounded-xl hover:bg-[#059669] transition-colors font-medium"
           >
             {t('search.button')}
           </button>
@@ -78,7 +78,7 @@ export function SearchPage() {
       {/* Search Results */}
       {results.length > 0 && (
         <div className="mb-10">
-          <h2 className="text-lg font-semibold text-gray-900 mb-4">
+          <h2 className="text-lg font-semibold text-[#e0e0e8] mb-4">
             {t('search.results', { count: results.length })}
           </h2>
           <div className="space-y-3">
@@ -92,8 +92,8 @@ export function SearchPage() {
       {query.trim() && results.length === 0 && (
         <div className="text-center py-12">
           <div className="text-4xl mb-3">🔍</div>
-          <p className="text-gray-500">{t('search.noResults')}</p>
-          <p className="text-sm text-gray-400 mt-1">
+          <p className="text-[#6b6b80]">{t('search.noResults')}</p>
+          <p className="text-sm text-[#555570] mt-1">
             {t('search.hint')}
           </p>
         </div>
@@ -103,7 +103,7 @@ export function SearchPage() {
       {!query.trim() && (
         <div>
           <div className="flex items-center justify-between mb-4">
-            <h2 className="text-lg font-semibold text-gray-900">{t('search.recent')}</h2>
+            <h2 className="text-lg font-semibold text-[#e0e0e8]">{t('search.recent')}</h2>
           </div>
           <div className="space-y-3">
             {recentIds.map((id) => (
@@ -111,7 +111,7 @@ export function SearchPage() {
             ))}
           </div>
           {maxProfiles > 5 && (
-            <p className="text-center text-sm text-gray-400 mt-6">
+            <p className="text-center text-sm text-[#555570] mt-6">
               {t('search.moreProfiles', { count: maxProfiles - 5 })}
             </p>
           )}

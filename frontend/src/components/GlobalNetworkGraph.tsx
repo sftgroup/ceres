@@ -129,7 +129,7 @@ export function GlobalNetworkGraph() {
   if (error) {
     return (
       <div className="w-full">
-        <h3 className="text-lg font-semibold text-gray-900 mb-4">{t('graph.globalTitle')}</h3>
+        <h3 className="text-lg font-semibold text-[#e0e0e8] mb-4">{t('graph.globalTitle')}</h3>
         <div className="bg-red-50 border border-red-200 rounded-2xl p-6 text-center">
           <p className="text-red-600 text-sm font-medium">{t('graph.error')}</p>
           <p className="text-red-400 text-xs mt-1">{error}</p>
@@ -142,10 +142,10 @@ export function GlobalNetworkGraph() {
     return (
       <div className="w-full">
         <div className="flex items-center justify-between mb-4">
-          <h3 className="text-lg font-semibold text-gray-900">{t('graph.globalTitle')}</h3>
+          <h3 className="text-lg font-semibold text-[#e0e0e8]">{t('graph.globalTitle')}</h3>
         </div>
         <div className="bg-[#0f172a] rounded-2xl border border-gray-800 p-4">
-          <p className="text-center py-20 text-gray-500 text-sm">{t('graph.noDids')}</p>
+          <p className="text-center py-20 text-[#6b6b80] text-sm">{t('graph.noDids')}</p>
         </div>
       </div>
     )
@@ -159,14 +159,14 @@ export function GlobalNetworkGraph() {
     <div className="w-full">
       {/* Header */}
       <div className="flex items-center justify-between mb-4">
-        <h3 className="text-lg font-semibold text-gray-900">{t('graph.globalTitle')}</h3>
+        <h3 className="text-lg font-semibold text-[#e0e0e8]">{t('graph.globalTitle')}</h3>
         <div className="flex items-center gap-2">
-          <span className="text-xs bg-gray-100 text-gray-600 px-2.5 py-1 rounded-full font-medium">
+          <span className="text-xs bg-[#16162a] text-[#808090] px-2.5 py-1 rounded-full font-medium">
             {t('graph.stats', { dids: total, edges: edges.length })}
           </span>
           <button
             onClick={() => setIsFullscreen(!isFullscreen)}
-            className="text-xs px-2 py-1 rounded border border-gray-200 text-gray-500 hover:border-emerald-300 hover:text-emerald-600 transition-colors"
+            className="text-xs px-2 py-1 rounded border border-[#2a2a40] text-[#6b6b80] hover:border-[#10b981]/40 hover:text-[#10b981] transition-colors"
           >
             {isFullscreen ? t('graph.closeFullscreen') : t('graph.fullscreen')}
           </button>
@@ -259,28 +259,28 @@ export function GlobalNetworkGraph() {
         {/* Fullscreen close button */}
         {isFullscreen && (
           <button onClick={() => setIsFullscreen(false)}
-            className="absolute top-4 right-4 z-30 px-3 py-1.5 bg-white/10 text-white border border-white/20 rounded-lg hover:bg-white/20 transition-colors text-sm">
+            className="absolute top-4 right-4 z-30 px-3 py-1.5 bg-[#12121a]/10 text-[#e0e0e8] border border-white/20 rounded-lg hover:bg-[#12121a]/20 transition-colors text-sm">
             {t('graph.exitFullscreen')}
           </button>
         )}
 
         {/* Selected node indicator bar + View Profile button */}
         {selectedNode && (
-          <div className="absolute bottom-4 left-1/2 -translate-x-1/2 z-20 bg-gray-900/95 backdrop-blur border border-gray-700 rounded-xl px-4 py-2.5 flex items-center gap-3 shadow-lg">
-            <div className="w-7 h-7 rounded-full flex items-center justify-center text-white font-bold text-xs shrink-0"
+          <div className="absolute bottom-4 left-1/2 -translate-x-1/2 z-20 bg-[#0a0a0f]/95 backdrop-blur border border-[#555570] rounded-xl px-4 py-2.5 flex items-center gap-3 shadow-glow-cyan">
+            <div className="w-7 h-7 rounded-full flex items-center justify-center text-[#e0e0e8] font-bold text-xs shrink-0"
               style={{ background: LEVEL_COLORS[selectedNode.level] ?? '#6B7280' }}>
               {selectedNode.name?.charAt(0)?.toUpperCase() ?? '#'}
             </div>
             <div className="text-left leading-tight min-w-0">
-              <p className="text-white text-xs font-medium truncate">{selectedNode.name || `DID #${selectedNode.tokenId}`}</p>
-              <p className="text-gray-400 text-[10px]">DID #{selectedNode.tokenId}</p>
+              <p className="text-[#e0e0e8] text-xs font-medium truncate">{selectedNode.name || `DID #${selectedNode.tokenId}`}</p>
+              <p className="text-[#555570] text-[10px]">DID #{selectedNode.tokenId}</p>
             </div>
             <button onClick={handleViewProfile}
-              className="ml-2 px-3 py-1 bg-emerald-600 text-white text-xs rounded-lg hover:bg-emerald-700 transition-colors font-medium whitespace-nowrap">
+              className="ml-2 px-3 py-1 bg-[#10b981] text-[#e0e0e8] text-xs rounded-lg hover:bg-[#059669] transition-colors font-medium whitespace-nowrap">
               {t('graph.viewProfile')}
             </button>
             <button onClick={() => setSelectedNode(null)}
-              className="text-gray-400 hover:text-white transition-colors">
+              className="text-[#555570] hover:text-[#e0e0e8] transition-colors">
               <svg className="w-4 h-4" fill="none" viewBox="0 0 24 24" stroke="currentColor">
                 <path strokeLinecap="round" strokeLinejoin="round" strokeWidth={2} d="M6 18L18 6M6 6l12 12" />
               </svg>

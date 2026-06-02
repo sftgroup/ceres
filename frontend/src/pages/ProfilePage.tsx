@@ -70,7 +70,7 @@ export function ProfilePage() {
   if (!tokenId) {
     return (
       <div className="max-w-4xl mx-auto px-4 py-16 text-center">
-        <p className="text-gray-500">{t('profile.notFound')}</p>
+        <p className="text-[#6b6b80]">{t('profile.notFound')}</p>
       </div>
     )
   }
@@ -79,7 +79,7 @@ export function ProfilePage() {
     return (
       <div className="max-w-4xl mx-auto px-4 py-16 text-center">
         <div className="animate-spin w-8 h-8 border-2 border-emerald-600 border-t-transparent rounded-full mx-auto" />
-        <p className="text-gray-500 mt-4">{t('profile.loading')}</p>
+        <p className="text-[#6b6b80] mt-4">{t('profile.loading')}</p>
       </div>
     )
   }
@@ -88,9 +88,9 @@ export function ProfilePage() {
     return (
       <div className="max-w-4xl mx-auto px-4 py-16 text-center">
         <div className="text-6xl mb-4">🔍</div>
-        <h2 className="text-xl font-semibold text-gray-900 mb-2">{t('profile.notFound')}</h2>
-        <p className="text-gray-500">{t('profile.notFoundDesc').replace('#', `#${tokenIdParam}`)}</p>
-        <Link to="/" className="inline-block mt-6 text-emerald-600 hover:text-emerald-700 font-medium">
+        <h2 className="text-xl font-semibold text-[#e0e0e8] mb-2">{t('profile.notFound')}</h2>
+        <p className="text-[#6b6b80]">{t('profile.notFoundDesc').replace('#', `#${tokenIdParam}`)}</p>
+        <Link to="/" className="inline-block mt-6 text-[#10b981] hover:text-emerald-700 font-medium">
           {t('profile.backHome')}
         </Link>
       </div>
@@ -100,10 +100,10 @@ export function ProfilePage() {
   return (
     <div className="max-w-5xl mx-auto px-4 sm:px-6 lg:px-8 py-8">
       {/* Profile Header */}
-      <div className="bg-white rounded-2xl border border-gray-100 shadow-sm p-6 sm:p-8 mb-8">
+      <div className="bg-[#12121a] rounded-2xl border border-gray-100 shadow-glow-cyan p-6 sm:p-8 mb-8">
         <div className="flex flex-col sm:flex-row items-start gap-6">
           {/* Avatar */}
-          <div className="w-20 h-20 sm:w-24 sm:h-24 rounded-full bg-gradient-to-br from-emerald-400 to-teal-500 flex items-center justify-center text-white text-3xl font-bold shrink-0 overflow-hidden ring-4 ring-emerald-50">
+          <div className="w-20 h-20 sm:w-24 sm:h-24 rounded-full bg-gradient-to-br from-[#10b981] to-[#0a2e2a] flex items-center justify-center text-[#e0e0e8] text-3xl font-bold shrink-0 overflow-hidden ring-4 ring-[#0a2e1a]">
             {profile.avatar ? (
               <img src={profile.avatar} alt="" className="w-full h-full object-cover" />
             ) : (
@@ -113,13 +113,13 @@ export function ProfilePage() {
 
           <div className="flex-1 min-w-0">
             <div className="flex flex-wrap items-center gap-3 mb-2">
-              <h1 className="text-2xl sm:text-3xl font-bold text-gray-900">
+              <h1 className="text-2xl sm:text-3xl font-bold text-[#e0e0e8]">
                 {editing ? (
                   <input
                     type="text"
                     value={editName}
                     onChange={(e) => setEditName(e.target.value)}
-                    className="w-full border border-gray-300 rounded-lg px-3 py-1 text-2xl font-bold"
+                    className="w-full border border-[#333355] rounded-lg px-3 py-1 text-2xl font-bold"
                   />
                 ) : (
                   profile.name || `DID #${tokenIdParam}`
@@ -133,14 +133,14 @@ export function ProfilePage() {
                 value={editBio}
                 onChange={(e) => setEditBio(e.target.value)}
                 rows={2}
-                className="w-full border border-gray-300 rounded-lg px-3 py-2 mt-1"
+                className="w-full border border-[#333355] rounded-lg px-3 py-2 mt-1"
                 placeholder="Bio"
               />
             ) : (
-              <p className="text-gray-600 mb-3">{profile.bio || t('profile.noBio')}</p>
+              <p className="text-[#808090] mb-3">{profile.bio || t('profile.noBio')}</p>
             )}
 
-            <p className="text-sm text-gray-400">
+            <p className="text-sm text-[#555570]">
               {t('profile.tokenId')}: #{tokenIdParam}
               {profile.owner && (
                 <>
@@ -152,20 +152,20 @@ export function ProfilePage() {
 
             {editing && (
               <div className="mt-3 space-y-2">
-                <label className="block text-sm font-medium text-gray-700">{t('profile.avatar')}</label>
+                <label className="block text-sm font-medium text-[#a0a0b0]">{t('profile.avatar')}</label>
                 <input
                   type="text"
                   value={editAvatar}
                   onChange={(e) => setEditAvatar(e.target.value)}
-                  className="w-full border border-gray-300 rounded-lg px-3 py-2 text-sm"
+                  className="w-full border border-[#333355] rounded-lg px-3 py-2 text-sm"
                   placeholder="https://..."
                 />
-                <label className="block text-sm font-medium text-gray-700 mt-2">{t('profile.urls')}</label>
+                <label className="block text-sm font-medium text-[#a0a0b0] mt-2">{t('profile.urls')}</label>
                 <input
                   type="text"
                   value={editUrls}
                   onChange={(e) => setEditUrls(e.target.value)}
-                  className="w-full border border-gray-300 rounded-lg px-3 py-2 text-sm"
+                  className="w-full border border-[#333355] rounded-lg px-3 py-2 text-sm"
                   placeholder="https://twitter.com/..., https://github.com/..."
                 />
               </div>
@@ -175,7 +175,7 @@ export function ProfilePage() {
               {isOwner && !editing && (
                 <button
                   onClick={startEdit}
-                  className="px-4 py-2 bg-emerald-600 text-white rounded-lg hover:bg-emerald-700 transition-colors text-sm font-medium"
+                  className="px-4 py-2 bg-[#10b981] text-[#e0e0e8] rounded-lg hover:bg-[#059669] transition-colors text-sm font-medium"
                 >
                   {t('profile.edit')}
                 </button>
@@ -185,13 +185,13 @@ export function ProfilePage() {
                   <button
                     onClick={saveEdit}
                     disabled={saving}
-                    className="px-4 py-2 bg-emerald-600 text-white rounded-lg hover:bg-emerald-700 disabled:opacity-50 transition-colors text-sm font-medium"
+                    className="px-4 py-2 bg-[#10b981] text-[#e0e0e8] rounded-lg hover:bg-[#059669] disabled:opacity-50 transition-colors text-sm font-medium"
                   >
                     {saving ? t('create.processing') : t('profile.save')}
                   </button>
                   <button
                     onClick={() => setEditing(false)}
-                    className="px-4 py-2 border border-gray-300 text-gray-700 rounded-lg hover:bg-gray-50 transition-colors text-sm font-medium"
+                    className="px-4 py-2 border border-[#333355] text-[#a0a0b0] rounded-lg hover:bg-[#12121a] transition-colors text-sm font-medium"
                   >
                     {t('profile.cancel')}
                   </button>
@@ -210,7 +210,7 @@ export function ProfilePage() {
                   href={url}
                   target="_blank"
                   rel="noopener noreferrer"
-                  className="inline-flex items-center gap-1 text-sm text-emerald-600 hover:text-emerald-700 bg-emerald-50 px-3 py-1 rounded-full"
+                  className="inline-flex items-center gap-1 text-sm text-[#10b981] hover:text-emerald-700 bg-[#0a2e1a] px-3 py-1 rounded-full"
                 >
                   <svg className="w-3.5 h-3.5" fill="none" viewBox="0 0 24 24" stroke="currentColor">
                     <path strokeLinecap="round" strokeLinejoin="round" strokeWidth={2} d="M13.828 10.172a4 4 0 00-5.656 0l-4 4a4 4 0 105.656 5.656l1.102-1.101m-.758-4.899a4 4 0 005.656 0l4-4a4 4 0 00-5.656-5.656l-1.1 1.1" />
@@ -227,16 +227,16 @@ export function ProfilePage() {
         {/* Main Content */}
         <div className="lg:col-span-2 space-y-8">
           {/* Ancestor Chain */}
-          <div className="bg-white rounded-2xl border border-gray-100 shadow-sm p-6">
-            <h3 className="text-lg font-semibold text-gray-900 mb-4">{t('profile.ancestors')}</h3>
+          <div className="bg-[#12121a] rounded-2xl border border-gray-100 shadow-glow-cyan p-6">
+            <h3 className="text-lg font-semibold text-[#e0e0e8] mb-4">{t('profile.ancestors')}</h3>
             {inviterId && inviterId !== 0n ? (
               <div className="flex flex-wrap items-center gap-2">
-                <span className="text-sm text-gray-500">{t('profile.inviter')}:</span>
+                <span className="text-sm text-[#6b6b80]">{t('profile.inviter')}:</span>
                 <Link
                   to={`/profile/${String(inviterId)}`}
-                  className="inline-flex items-center gap-1 px-3 py-1.5 bg-gray-50 hover:bg-emerald-50 rounded-lg text-sm font-medium text-gray-700 hover:text-emerald-600 transition-colors"
+                  className="inline-flex items-center gap-1 px-3 py-1.5 bg-[#12121a] hover:bg-[#0a2e1a] rounded-lg text-sm font-medium text-[#a0a0b0] hover:text-[#10b981] transition-colors"
                 >
-                  <span className="w-5 h-5 bg-emerald-100 rounded-full flex items-center justify-center text-emerald-600 text-xs font-bold">
+                  <span className="w-5 h-5 bg-[#0f3d22] rounded-full flex items-center justify-center text-[#10b981] text-xs font-bold">
                     {String(inviterId)}
                   </span>
                   DID #{String(inviterId)}
@@ -248,7 +248,7 @@ export function ProfilePage() {
                       <Link
                         key={i}
                         to={`/profile/${String(anc)}`}
-                        className="inline-flex items-center gap-1 px-3 py-1.5 bg-gray-50 hover:bg-emerald-50 rounded-lg text-sm font-medium text-gray-500 hover:text-emerald-600 transition-colors"
+                        className="inline-flex items-center gap-1 px-3 py-1.5 bg-[#12121a] hover:bg-[#0a2e1a] rounded-lg text-sm font-medium text-[#6b6b80] hover:text-[#10b981] transition-colors"
                       >
                         #{String(anc)}
                       </Link>
@@ -257,7 +257,7 @@ export function ProfilePage() {
                 )}
               </div>
             ) : (
-              <p className="text-sm text-gray-400">{t('profile.noInviter')}</p>
+              <p className="text-sm text-[#555570]">{t('profile.noInviter')}</p>
             )}
           </div>
 
@@ -266,8 +266,8 @@ export function ProfilePage() {
 
           {/* Invitees List */}
           {invites.length > 0 && (
-            <div className="bg-white rounded-2xl border border-gray-100 shadow-sm p-6">
-              <h3 className="text-lg font-semibold text-gray-900 mb-4">{t('profile.invitees')} ({invites.length})</h3>
+            <div className="bg-[#12121a] rounded-2xl border border-gray-100 shadow-glow-cyan p-6">
+              <h3 className="text-lg font-semibold text-[#e0e0e8] mb-4">{t('profile.invitees')} ({invites.length})</h3>
               <div className="space-y-2">
                 {invites.map((id) => (
                   <ProfileCard key={String(id)} tokenId={id} />
@@ -280,31 +280,31 @@ export function ProfilePage() {
         {/* Sidebar */}
         <div className="space-y-6">
           {/* Stats */}
-          <div className="bg-white rounded-2xl border border-gray-100 shadow-sm p-6">
-            <h3 className="text-lg font-semibold text-gray-900 mb-4">{t('profile.stats')}</h3>
+          <div className="bg-[#12121a] rounded-2xl border border-gray-100 shadow-glow-cyan p-6">
+            <h3 className="text-lg font-semibold text-[#e0e0e8] mb-4">{t('profile.stats')}</h3>
             <div className="space-y-4">
               <div className="flex justify-between items-center">
-                <span className="text-sm text-gray-500">{t('profile.directInvites')}</span>
-                <span className="font-semibold text-gray-900">{invites.length}</span>
+                <span className="text-sm text-[#6b6b80]">{t('profile.directInvites')}</span>
+                <span className="font-semibold text-[#e0e0e8]">{invites.length}</span>
               </div>
               <div className="flex justify-between items-center">
-                <span className="text-sm text-gray-500">{t('profile.totalDescendants')}</span>
-                <span className="font-semibold text-gray-900">{String(descendantCount ?? 0)}</span>
+                <span className="text-sm text-[#6b6b80]">{t('profile.totalDescendants')}</span>
+                <span className="font-semibold text-[#e0e0e8]">{String(descendantCount ?? 0)}</span>
               </div>
               <div className="flex justify-between items-center">
-                <span className="text-sm text-gray-500">{t('profile.level')}</span>
+                <span className="text-sm text-[#6b6b80]">{t('profile.level')}</span>
                 <LevelBadge level={levelVal} size="sm" />
               </div>
             </div>
           </div>
 
           {/* Level Info */}
-          <div className="bg-gradient-to-br from-emerald-50 to-teal-50 rounded-2xl border border-emerald-100 p-6">
+          <div className="bg-gradient-to-br from-[#0a2e1a] to-[#0a2e2a] rounded-2xl border border-emerald-100 p-6">
             <h3 className="text-sm font-semibold text-emerald-800 mb-2">{t('profile.levelUp')}</h3>
             <p className="text-xs text-emerald-700 leading-relaxed">
               {t('profile.levelUpDesc')}
             </p>
-            <div className="mt-3 space-y-1 text-xs text-emerald-600">
+            <div className="mt-3 space-y-1 text-xs text-[#10b981]">
               <div>🌱 {t('level.seed')} → 0</div>
               <div>🥉 {t('level.bronze')} → ≥ 3</div>
               <div>🥈 {t('level.silver')} → ≥ 10</div>
