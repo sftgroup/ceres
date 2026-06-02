@@ -3,6 +3,7 @@ import { Link } from 'react-router-dom'
 import { useAccount } from 'wagmi'
 import { useCeres } from '../hooks/useCeres'
 import { useI18n } from '../I18nContext'
+import { GlobalNetworkGraph } from '../components/GlobalNetworkGraph'
 import { LevelBadge } from '../components/LevelBadge'
 import { CreateProfileModal } from '../components/CreateProfileModal'
 
@@ -126,6 +127,11 @@ export function HomePage() {
             </div>
           </div>
         </div>
+      </section>
+
+      {/* 🌐 Global Network Graph */}
+      <section className="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8 py-16">
+        <GlobalNetworkGraph />
       </section>
 
       {/* 🌐 All Networks Module */}
