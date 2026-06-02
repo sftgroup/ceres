@@ -15,13 +15,21 @@ const LEVELS = [
   { level: 5, icon: '🔷', desc: '≥ 1000 descendants' },
 ]
 
-/** Query the most recent N profiles by tokenId */
-function useRecentProfiles(count: number) {
-  const { useProfile } = useCeres()
-  return Array.from({ length: count }, (_, i) => {
-    // eslint-disable-next-line react-hooks/rules-of-hooks
-    return useProfile(BigInt(count - i))
-  })
+/** Query the most recent N profiles by tokenId — always calls hooks fixed N times */
+const RECENT_COUNT = 6
+
+function useRecentProfiles() {
+  const { useProfile, useTotalProfiles } = useCeres()
+  const { data: totalProfiles } = useTotalProfiles()
+  const totalProf = totalProfiles != null ? Number(totalProfiles) : 0
+  const results = []
+  for (let i = 0; i < RECENT_COUNT; i++) {
+    const tokenId = RECENT_COUNT - i
+    const enabled = tokenId <= totalProf
+    // Always call the hook (fixed count) — pass undefined when out of range
+    results.push(useProfile(enabled ? BigInt(tokenId) : undefined))
+  }
+  return results
 }
 
 export function HomePage() {
@@ -39,8 +47,7 @@ export function HomePage() {
   const hasProfile = profileCount != null && Number(profileCount) > 0
 
   // Recent profiles — show latest 6
-  const recentCount = Math.min(totalProf, 6)
-  const recentQueries = useRecentProfiles(recentCount)
+  const recentQueries = useRecentProfiles()
   const recentProfiles = useMemo(() => {
     return recentQueries
       .map((q) => q.data)

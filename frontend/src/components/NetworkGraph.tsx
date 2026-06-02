@@ -44,10 +44,13 @@ const MAX_INVITEES = 20
 
 function useInviteeProfilesSafe(inviteeIds: bigint[]) {
   const { useProfile } = useCeres()
-  return Array.from({ length: Math.min(inviteeIds.length, MAX_INVITEES) }, (_, i) => {
-    // eslint-disable-next-line react-hooks/rules-of-hooks
-    return useProfile(inviteeIds[i])
-  })
+  // Always call hooks MAX_INVITEES times (fixed count — React rules)
+  const results: ReturnType<typeof useProfile>[] = []
+  for (let i = 0; i < MAX_INVITEES; i++) {
+    const id = i < inviteeIds.length ? inviteeIds[i] : undefined
+    results.push(useProfile(id))
+  }
+  return results.slice(0, inviteeIds.length)
 }
 
 export function NetworkGraph({ tokenId }: { tokenId: bigint; depth?: number }) {
