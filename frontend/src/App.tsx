@@ -1,7 +1,7 @@
 import { useEffect } from 'react'
 import { BrowserRouter, Routes, Route } from 'react-router-dom'
 import { QueryClient, QueryClientProvider } from '@tanstack/react-query'
-import { WagmiProvider, useAccount, useConnect, useReconnect } from 'wagmi'
+import { WagmiProvider, useConnect, useAccount } from 'wagmi'
 import { config } from './config'
 import { I18nProvider } from './I18nContext'
 import { Navbar } from './components/Navbar'
@@ -21,60 +21,40 @@ const queryClient = new QueryClient({
   },
 })
 
-// Wallet event sync — watches for account/chain changes from wallet
+/**
+ * After "Switch Account" triggers a page reload, sessionStorage holds the
+ * chosen connector id. On mount, find it and auto-connect — the wallet
+ * will show its account picker since this is a fresh page context.
+ */
 function WalletSync({ children }: { children: React.ReactNode }) {
-  const { reconnect } = useReconnect()
-  const { isConnected } = useAccount()
   const { connectors, connect } = useConnect()
+  const { isConnected } = useAccount()
 
-  // Auto-reconnect after Switch Account page reload
   useEffect(() => {
     const storedId = sessionStorage.getItem('ceres_reconnect')
     if (!storedId || isConnected) return
 
-    const id = setInterval(() => {
-      const c = connectors.find(x => x.id === storedId || x.uid === storedId || x.name === storedId)
+    // Connectors may not be ready immediately after wagmi init
+    const timer = setInterval(() => {
+      const c = connectors.find(
+        (x: any) => x.id === storedId || x.uid === storedId || x.name === storedId,
+      )
       if (c) {
-        clearInterval(id)
+        clearInterval(timer)
         sessionStorage.removeItem('ceres_reconnect')
         connect({ connector: c })
       }
     }, 100)
 
-    const timeout = setTimeout(() => clearInterval(id), 5000)
-    return () => { clearInterval(id); clearTimeout(timeout) }
+    const timeout = setTimeout(() => clearInterval(timer), 8000)
+    return () => {
+      clearInterval(timer)
+      clearTimeout(timeout)
+    }
   }, [isConnected, connectors, connect])
 
-  // Listen for wallet events (account/chain/disconnect)
-  useEffect(() => {
-    const ethereum = (window as any).ethereum
-    if (!ethereum) return
-
-    const handleAccountsChanged = (...args: unknown[]) => {
-      console.log('[Ceres] accountsChanged', args)
-      reconnect()
-    }
-
-    const handleChainChanged = (...args: unknown[]) => {
-      console.log('[Ceres] chainChanged', args)
-      reconnect()
-    }
-
-    const handleDisconnect = () => {
-      console.log('[Ceres] disconnect')
-      Object.keys(localStorage).forEach(k => { if (k.startsWith('wagmi')) localStorage.removeItem(k) })
-      reconnect()
-    }
-
-    ethereum.on('accountsChanged', handleAccountsChanged)
-    ethereum.on('chainChanged', handleChainChanged)
-    ethereum.on('disconnect', handleDisconnect)
-    return () => {
-      ethereum.removeListener('accountsChanged', handleAccountsChanged)
-      ethereum.removeListener('chainChanged', handleChainChanged)
-      ethereum.removeListener('disconnect', handleDisconnect)
-    }
-  }, [reconnect, isConnected])
+  // wagmi v3 handles accountsChanged / chainChanged / disconnect
+  // internally via EIP-6963 connector providers. No need for manual listeners.
 
   return <>{children}</>
 }
@@ -86,20 +66,20 @@ function App() {
         <I18nProvider>
           <BrowserRouter>
             <WalletSync>
-            <div className="min-h-screen bg-gray-50">
-              <Navbar />
-              <main>
-                <Routes>
-                  <Route path="/" element={<HomePage />} />
-                  <Route path="/profile/:tokenId" element={<ProfilePage />} />
-                  <Route path="/invite" element={<InvitePage />} />
-                  <Route path="/mint" element={<MintPage />} />
-                  <Route path="/search" element={<SearchPage />} />
-                  <Route path="/admin" element={<AdminPage />} />
-                </Routes>
-              </main>
-            </div>
-            </WalletSync>
+              <div className="min-h-screen bg-gray-50">
+                <Navbar />
+                <main>
+                  <Routes>
+                    <Route path="/" element={<HomePage />} />
+                    <Route path="/profile/:tokenId" element={<ProfilePage />} />
+                    <Route path="/invite" element={<InvitePage />} />
+                    <Route path="/mint" element={<MintPage />} />
+                    <Route path="/search" element={<SearchPage />} />
+                    <Route path="/admin" element={<AdminPage />} />
+                  </Routes>
+                </main>
+              </div>
+              </WalletSync>
           </BrowserRouter>
         </I18nProvider>
       </QueryClientProvider>
