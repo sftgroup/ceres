@@ -1,5 +1,5 @@
 import { useEffect, Component } from 'react'
-import { HashRouter, Routes, Route } from 'react-router-dom'
+import { createHashRouter, RouterProvider, Outlet } from 'react-router-dom'
 import { QueryClient, QueryClientProvider } from '@tanstack/react-query'
 import { WagmiProvider, useConnect, useAccount } from 'wagmi'
 import { config } from './config'
@@ -79,30 +79,45 @@ function WalletSync({ children }: { children: React.ReactNode }) {
   return <>{children}</>
 }
 
+/**
+ * Layout component that wraps all routes (Navbar + content area).
+ */
+function AppLayout() {
+  return (
+    <AppErrorBoundary>
+      <WalletSync>
+        <div className="min-h-screen bg-gray-50">
+          <Navbar />
+          <main>
+            <Outlet />
+          </main>
+        </div>
+      </WalletSync>
+    </AppErrorBoundary>
+  )
+}
+
+const router = createHashRouter([
+  {
+    path: '/',
+    element: <AppLayout />,
+    children: [
+      { index: true, element: <HomePage /> },
+      { path: 'profile/:tokenId', element: <ProfilePage /> },
+      { path: 'invite', element: <InvitePage /> },
+      { path: 'mint', element: <MintPage /> },
+      { path: 'search', element: <SearchPage /> },
+      { path: 'admin', element: <AdminPage /> },
+    ],
+  },
+])
+
 function App() {
   return (
     <WagmiProvider config={config}>
       <QueryClientProvider client={queryClient}>
         <I18nProvider>
-          <HashRouter>
-            <AppErrorBoundary>
-              <WalletSync>
-                <div className="min-h-screen bg-gray-50">
-                  <Navbar />
-                  <main>
-                    <Routes>
-                      <Route path="/" element={<HomePage />} />
-                      <Route path="/profile/:tokenId" element={<ProfilePage />} />
-                      <Route path="/invite" element={<InvitePage />} />
-                      <Route path="/mint" element={<MintPage />} />
-                      <Route path="/search" element={<SearchPage />} />
-                      <Route path="/admin" element={<AdminPage />} />
-                    </Routes>
-                  </main>
-                </div>
-              </WalletSync>
-            </AppErrorBoundary>
-          </HashRouter>
+          <RouterProvider router={router} />
         </I18nProvider>
       </QueryClientProvider>
     </WagmiProvider>
