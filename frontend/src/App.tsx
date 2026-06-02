@@ -1,5 +1,5 @@
 import { useEffect, Component } from 'react'
-import { HashRouter, Routes, Route } from 'react-router-dom'
+import { BrowserRouter, Routes, Route } from 'react-router-dom'
 import { QueryClient, QueryClientProvider } from '@tanstack/react-query'
 import { WagmiProvider, useConnect, useAccount } from 'wagmi'
 import { config } from './config'
@@ -21,7 +21,7 @@ const queryClient = new QueryClient({
   },
 })
 
-class AppErrorBoundary extends Component<{ children: React.ReactNode }, { error: string | null }> {
+class ErrorBoundary extends Component<{ children: React.ReactNode }, { error: string | null }> {
   state = { error: null as string | null }
   static getDerivedStateFromError(e: Error) { return { error: e.message } }
   render() {
@@ -44,7 +44,11 @@ class AppErrorBoundary extends Component<{ children: React.ReactNode }, { error:
   }
 }
 
-/** Auto-connects after "Switch Account" page reload */
+/**
+ * After "Switch Account" triggers a page reload, sessionStorage holds the
+ * chosen connector id. On mount, find it and auto-connect — the wallet
+ * will show its account picker since this is a fresh page context.
+ */
 function WalletSync({ children }: { children: React.ReactNode }) {
   const { connectors, connect } = useConnect()
   const { isConnected } = useAccount()
@@ -53,6 +57,7 @@ function WalletSync({ children }: { children: React.ReactNode }) {
     const storedId = sessionStorage.getItem('ceres_reconnect')
     if (!storedId || isConnected) return
 
+    // Connectors may not be ready immediately after wagmi init
     const timer = setInterval(() => {
       const c = connectors.find(
         (x: any) => x.id === storedId || x.uid === storedId || x.name === storedId,
@@ -71,6 +76,9 @@ function WalletSync({ children }: { children: React.ReactNode }) {
     }
   }, [isConnected, connectors, connect])
 
+  // wagmi v3 handles accountsChanged / chainChanged / disconnect
+  // internally via EIP-6963 connector providers. No need for manual listeners.
+
   return <>{children}</>
 }
 
@@ -79,25 +87,25 @@ function App() {
     <WagmiProvider config={config}>
       <QueryClientProvider client={queryClient}>
         <I18nProvider>
-          <AppErrorBoundary>
+          <BrowserRouter>
+            <ErrorBoundary>
             <WalletSync>
-              <HashRouter>
-                <div className="min-h-screen bg-gray-50">
-                  <Navbar />
-                  <main>
-                    <Routes>
-                      <Route path="/" element={<HomePage />} />
-                      <Route path="/profile/:tokenId" element={<ProfilePage />} />
-                      <Route path="/invite" element={<InvitePage />} />
-                      <Route path="/mint" element={<MintPage />} />
-                      <Route path="/search" element={<SearchPage />} />
-                      <Route path="/admin" element={<AdminPage />} />
-                    </Routes>
-                  </main>
-                </div>
-              </HashRouter>
-            </WalletSync>
-          </AppErrorBoundary>
+              <div className="min-h-screen bg-gray-50">
+                <Navbar />
+                <main>
+                  <Routes>
+                    <Route path="/" element={<HomePage />} />
+                    <Route path="/profile/:tokenId" element={<ProfilePage />} />
+                    <Route path="/invite" element={<InvitePage />} />
+                    <Route path="/mint" element={<MintPage />} />
+                    <Route path="/search" element={<SearchPage />} />
+                    <Route path="/admin" element={<AdminPage />} />
+                  </Routes>
+                </main>
+              </div>
+              </WalletSync>
+            </ErrorBoundary>
+          </BrowserRouter>
         </I18nProvider>
       </QueryClientProvider>
     </WagmiProvider>
