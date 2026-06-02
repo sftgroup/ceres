@@ -1,4 +1,4 @@
-import { useState } from 'react'
+import { useState, useEffect } from 'react'
 import { Link, useNavigate } from 'react-router-dom'
 import { useAccount, useSwitchChain, useChainId } from 'wagmi'
 import { useI18n } from '../I18nContext'
@@ -25,6 +25,13 @@ export function Navbar() {
   const chainId = useChainId()
   const navigate = useNavigate()
   const [chainMenuOpen, setChainMenuOpen] = useState(false)
+  const [chainMsg, setChainMsg] = useState<{ text: string; ok: boolean } | null>(null)
+
+  useEffect(() => {
+    if (!chainMsg) return
+    const t = setTimeout(() => setChainMsg(null), 2500)
+    return () => clearTimeout(t)
+  }, [chainMsg])
 
   return (
     <nav className="bg-white/80 backdrop-blur-md border-b border-emerald-100 sticky top-0 z-50">
@@ -72,7 +79,9 @@ export function Navbar() {
                   className="text-xs px-2.5 py-1.5 rounded-lg border border-gray-200 bg-white text-gray-600 hover:border-emerald-300 transition-colors flex items-center gap-1.5 disabled:opacity-50"
                 >
                   <span>{CHAIN_ICONS[chainId] ?? '⛓️'}</span>
-                  <span className="font-medium">{CHAIN_LABELS[chainId] ?? `Chain ${chainId}`}</span>
+                  <span className="font-medium">
+                    {isSwitching ? '...' : (CHAIN_LABELS[chainId] ?? `Chain ${chainId}`)}
+                  </span>
                   <svg className="w-3 h-3" fill="none" viewBox="0 0 24 24" stroke="currentColor">
                     <path strokeLinecap="round" strokeLinejoin="round" strokeWidth={2} d="M19 9l-7 7-7-7" />
                   </svg>
@@ -88,15 +97,21 @@ export function Navbar() {
                       {chains.map((c) => (
                         <button
                           key={c.id}
+                          disabled={isSwitching}
                           onClick={async () => {
+                            setChainMenuOpen(false)
                             try {
                               await switchChain({ chainId: c.id })
-                            } catch (e) {
-                              console.error('Switch chain failed:', e)
+                              setChainMsg({ text: `Switched to ${CHAIN_LABELS[c.id] ?? c.name}`, ok: true })
+                            } catch (e: any) {
+                              const userRejected = e?.code === 4001 || e?.message?.includes('rejected') || e?.message?.includes('denied')
+                              setChainMsg({
+                                text: userRejected ? 'Request cancelled' : `Failed to switch: ${e?.message?.slice(0, 60) ?? 'Unknown error'}`,
+                                ok: false,
+                              })
                             }
-                            setChainMenuOpen(false)
                           }}
-                          className={`w-full flex items-center gap-2 px-4 py-2 text-sm text-left transition-colors ${
+                          className={`w-full flex items-center gap-2 px-4 py-2 text-sm text-left transition-colors disabled:opacity-50 ${
                             c.id === chainId
                               ? 'bg-emerald-50 text-emerald-700 font-medium'
                               : 'text-gray-700 hover:bg-gray-50'
@@ -134,6 +149,20 @@ export function Navbar() {
           </div>
         </div>
       </div>
+
+      {/* Chain switch toast */}
+      {chainMsg && (
+        <div
+          className={`fixed top-20 left-1/2 -translate-x-1/2 z-[200] px-4 py-2.5 rounded-xl shadow-lg text-sm font-medium transition-all ${
+            chainMsg.ok
+              ? 'bg-emerald-600 text-white'
+              : 'bg-red-500 text-white'
+          }`}
+        >
+          {chainMsg.ok ? '✅ ' : '❌ '}
+          {chainMsg.text}
+        </div>
+      )}
     </nav>
   )
 }
