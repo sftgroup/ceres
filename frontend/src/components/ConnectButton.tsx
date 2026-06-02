@@ -25,7 +25,7 @@ export function ConnectButton({ variant = 'header', className = '' }: ConnectBut
   const shortAddress = address ? `${address.slice(0, 6)}...${address.slice(-4)}` : ''
   const userTokenId = useUserTokenId()
 
-  const availableConnectors = connectors.filter((c) => c.type !== 'injected' || !!c.name)
+  const availableConnectors = connectors
 
   const copyAddress = async () => {
     if (!address) return
