@@ -1,7 +1,7 @@
 import { useEffect } from 'react'
 import { BrowserRouter, Routes, Route } from 'react-router-dom'
 import { QueryClient, QueryClientProvider } from '@tanstack/react-query'
-import { WagmiProvider, useAccount, useReconnect } from 'wagmi'
+import { WagmiProvider, useAccount, useConnect, useReconnect } from 'wagmi'
 import { config } from './config'
 import { I18nProvider } from './I18nContext'
 import { Navbar } from './components/Navbar'
@@ -25,7 +25,27 @@ const queryClient = new QueryClient({
 function WalletSync({ children }: { children: React.ReactNode }) {
   const { reconnect } = useReconnect()
   const { isConnected } = useAccount()
+  const { connectors, connect } = useConnect()
 
+  // Auto-reconnect after Switch Account page reload
+  useEffect(() => {
+    const storedId = sessionStorage.getItem('ceres_reconnect')
+    if (!storedId || isConnected) return
+
+    const id = setInterval(() => {
+      const c = connectors.find(x => x.id === storedId || x.uid === storedId || x.name === storedId)
+      if (c) {
+        clearInterval(id)
+        sessionStorage.removeItem('ceres_reconnect')
+        connect({ connector: c })
+      }
+    }, 100)
+
+    const timeout = setTimeout(() => clearInterval(id), 5000)
+    return () => { clearInterval(id); clearTimeout(timeout) }
+  }, [isConnected, connectors, connect])
+
+  // Listen for wallet events (account/chain/disconnect)
   useEffect(() => {
     const ethereum = (window as any).ethereum
     if (!ethereum) return

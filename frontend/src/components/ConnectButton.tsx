@@ -58,17 +58,14 @@ export function ConnectButton({ variant = 'header', className = '' }: ConnectBut
     setDropdownOpen(false)
   }
 
-  const doSwitchAccount = async (c: typeof connectors[number]) => {
-    setSwitchModalOpen(false)
-    setDropdownOpen(false)
-    // Fully disconnect and clear wagmi's persisted state
-    try { await disconnect() } catch {}
-    // Clear all wagmi localStorage entries to prevent auto-reconnect to old wallet
+  const doSwitchAccount = (c: typeof connectors[number]) => {
+    // Store connector id so we auto-reconnect after reload
+    sessionStorage.setItem('ceres_reconnect', c.id || c.uid || c.name)
+    // Clear all wagmi state
+    disconnect()
     Object.keys(localStorage).forEach(k => { if (k.startsWith('wagmi')) localStorage.removeItem(k) })
-    // Delay to let wagmi fully clean up, then connect fresh with chosen wallet
-    setTimeout(() => {
-      connect({ connector: c })
-    }, 300)
+    // Hard reload — fresh state, wallet will show account picker
+    window.location.reload()
   }
 
   // ── Connected state ──
