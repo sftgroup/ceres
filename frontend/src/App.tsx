@@ -1,4 +1,3 @@
-import { useEffect } from 'react'
 import { BrowserRouter, Routes, Route } from 'react-router-dom'
 import { QueryClient, QueryClientProvider } from '@tanstack/react-query'
 import { WagmiProvider } from 'wagmi'
@@ -22,19 +21,6 @@ const queryClient = new QueryClient({
 })
 
 function App() {
-  // Auto-refresh on wallet account change (OKX wallet account switch)
-  useEffect(() => {
-    if (typeof window !== 'undefined' && window.ethereum) {
-      const handleAccountsChanged = () => {
-        window.location.reload()
-      }
-      window.ethereum.on('accountsChanged', handleAccountsChanged)
-      return () => {
-        window.ethereum.removeListener('accountsChanged', handleAccountsChanged)
-      }
-    }
-  }, [])
-
   return (
     <WagmiProvider config={config}>
       <QueryClientProvider client={queryClient}>

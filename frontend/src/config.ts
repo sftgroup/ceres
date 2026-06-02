@@ -1,5 +1,5 @@
 import { http, createConfig } from 'wagmi'
-import { sepolia, mainnet, holesky, hardhat } from 'wagmi/chains'
+import { sepolia, mainnet } from 'wagmi/chains'
 
 declare module 'wagmi' {
   interface Register {
@@ -7,12 +7,13 @@ declare module 'wagmi' {
   }
 }
 
+const SEPOLIA_RPC = 'https://sepolia.gateway.tenderly.co'
+
 export const config = createConfig({
-  chains: [sepolia, mainnet, holesky, hardhat],
+  chains: [sepolia, mainnet],
+  syncConnectedChain: true,
   transports: {
-    [sepolia.id]: http(),
-    [mainnet.id]: http(),
-    [holesky.id]: http(),
-    [hardhat.id]: http(),
+    [sepolia.id]: http(SEPOLIA_RPC),
+    [mainnet.id]: http('https://eth.merkle.io'),
   },
 })

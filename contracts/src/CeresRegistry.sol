@@ -35,6 +35,9 @@ contract CeresRegistry is Ownable {
     /// @notice tokenId → total descendant count (cached, incrementally updated).
     mapping(uint256 => uint256) public descendantCount;
 
+    /// @notice Address → tokenId (each address can only have one DID).
+    mapping(address => uint256) public tokenOf;
+
     /// @notice Fee to mint a DID profile.
     uint256 public mintFee = 0.001 ether;
 
@@ -118,6 +121,7 @@ contract CeresRegistry is Ownable {
 
         // Mint DID NFT
         uint256 tokenId = didContract.mint(msg.sender);
+        tokenOf[msg.sender] = tokenId;
 
         // Record invite relationship
         if (inviterTokenId > 0) {

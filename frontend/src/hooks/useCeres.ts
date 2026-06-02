@@ -1,4 +1,4 @@
-import { useReadContract, useReadContracts, useWriteContract, useAccount, useBalance } from 'wagmi'
+import { useReadContract, useWriteContract, useAccount, useBalance } from 'wagmi'
 import { CERES_DID_ADDRESS, CERES_REGISTRY_ADDRESS } from '../contracts/addresses'
 import { CeresDID_ABI } from '../contracts/CeresDID'
 import { CeresRegistry_ABI } from '../contracts/CeresRegistry'
@@ -195,34 +195,14 @@ export function useCeres() {
 
   /** Auto-detect the first token ID owned by the connected wallet */
   function useUserTokenId(): bigint | undefined {
-    const { data: totalSupply } = useReadContract({
-      ...didContract,
-      functionName: 'totalSupply',
+    const { data } = useReadContract({
+      ...registryContract,
+      functionName: 'tokenOf',
+      args: address ? [address] : undefined,
       query: { enabled: !!address },
     })
-
-    const contracts = useMemo(() => {
-      const count = totalSupply ? Math.min(Number(totalSupply), 50) : 0
-      if (count === 0 || !address) return []
-      return Array.from({ length: count }, (_, i) => ({
-        ...didContract,
-        functionName: 'ownerOf' as const,
-        args: [BigInt(i + 1)],
-      }))
-    }, [totalSupply, address])
-
-    const { data: ownerResults } = useReadContracts({ contracts })
-
-    return useMemo(() => {
-      if (!ownerResults || !address) return undefined
-      for (let i = 0; i < ownerResults.length; i++) {
-        const r = ownerResults[i]
-        if (r.result && String(r.result).toLowerCase() === String(address).toLowerCase()) {
-          return BigInt(i + 1)
-        }
-      }
-      return undefined
-    }, [ownerResults, address])
+    const tokenId = (data as bigint | undefined)
+    return tokenId && tokenId > 0n ? tokenId : undefined
   }
 
   // --- Write Hooks ---

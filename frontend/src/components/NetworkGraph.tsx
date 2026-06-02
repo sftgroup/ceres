@@ -1,7 +1,6 @@
 import { useMemo, useEffect, useRef, useState, useCallback } from 'react'
 import { useNavigate } from 'react-router-dom'
 import { useCeres } from '../hooks/useCeres'
-import { useI18n } from '../I18nContext'
 
 interface NetworkGraphProps {
   tokenId: bigint
@@ -67,7 +66,6 @@ function useInviteeProfilesSafe(inviteeIds: bigint[]) {
 
 export function NetworkGraph({ tokenId, depth: _depth = 1 }: NetworkGraphProps) {
   const { useDirectInvitees, useProfile, useLevel, getLevelName } = useCeres()
-  const { t } = useI18n()
   const navigate = useNavigate()
   const svgRef = useRef<SVGSVGElement>(null)
   const animRef = useRef<number>(0)
@@ -128,7 +126,7 @@ export function NetworkGraph({ tokenId, depth: _depth = 1 }: NetworkGraphProps) 
   // Particle generator
   const generateParticles = useCallback(() => {
     if (graphNodes.length < 2) return
-    const center = centerNode
+    const center = graphNodes.find(n => n.isCenter) ?? graphNodes[0]
     const children = graphNodes.slice(1)
     const newParticles: Particle[] = []
 
@@ -195,7 +193,7 @@ export function NetworkGraph({ tokenId, depth: _depth = 1 }: NetworkGraphProps) 
     navigate(`/profile/${String(id)}`)
   }
 
-  const centerNode = centerNode
+  const centerNode = graphNodes.find(n => n.isCenter)
   const centerColor = LEVEL_COLORS[centerLevelVal] ?? '#6B7280'
   const centerGlow = LEVEL_GLOW_COLORS[centerLevelVal] ?? 'rgba(107,114,128,0.5)'
 
