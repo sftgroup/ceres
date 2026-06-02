@@ -6,6 +6,7 @@ import { useI18n } from '../I18nContext'
 import { GlobalNetworkGraph } from '../components/GlobalNetworkGraph'
 import { LevelBadge } from '../components/LevelBadge'
 import { CreateProfileModal } from '../components/CreateProfileModal'
+import { ProfileCard } from '../components/ProfileCard'
 
 const LEVELS = [
   { level: 0, icon: '🌱', descKey: 'home.levels.seed' },
@@ -41,6 +42,7 @@ export function HomePage() {
   const { data: profileCount } = useProfileCount()
 
   const [showCreate, setShowCreate] = useState(false)
+  const [profileCardTokenId, setProfileCardTokenId] = useState<bigint | null>(null)
 
   const totalProf = totalProfiles != null ? Number(totalProfiles) : 0
   const totalSup = totalSupply != null ? Number(totalSupply) : 0
@@ -199,26 +201,29 @@ export function HomePage() {
               </div>
             ) : (
               <div className="space-y-3">
-                {recentProfiles.map((p: any, i: number) => (
-                  <Link
-                    key={i}
-                    to={`/profile/${totalProf - recentProfiles.length + i + 1}`}
-                    className="flex items-center gap-3 p-3 rounded-xl hover:bg-gray-50 transition-colors group"
-                  >
-                    <div className="w-10 h-10 bg-gradient-to-br from-emerald-400 to-teal-500 rounded-full flex items-center justify-center text-white font-bold text-sm shrink-0">
-                      {p.name?.charAt(0)?.toUpperCase() ?? '?'}
+                {recentProfiles.map((p: any, i: number) => {
+                  const memberTokenId = BigInt(totalProf - recentProfiles.length + i + 1)
+                  return (
+                    <div
+                      key={i}
+                      onClick={() => setProfileCardTokenId(memberTokenId)}
+                      className="flex items-center gap-3 p-3 rounded-xl hover:bg-gray-50 transition-colors group cursor-pointer"
+                    >
+                      <div className="w-10 h-10 bg-gradient-to-br from-emerald-400 to-teal-500 rounded-full flex items-center justify-center text-white font-bold text-sm shrink-0">
+                        {p.name?.charAt(0)?.toUpperCase() ?? '?'}
+                      </div>
+                      <div className="flex-1 min-w-0">
+                        <p className="font-medium text-gray-900 text-sm group-hover:text-emerald-600 transition-colors truncate">
+                          {p.name || t('home.network.unknown')}
+                        </p>
+                        <p className="text-xs text-gray-400">
+                          DID #{String(memberTokenId)}
+                        </p>
+                      </div>
+                      <LevelBadge level={p.level ?? 0} size="sm" />
                     </div>
-                    <div className="flex-1 min-w-0">
-                      <p className="font-medium text-gray-900 text-sm group-hover:text-emerald-600 transition-colors truncate">
-                        {p.name || t('home.network.unknown')}
-                      </p>
-                      <p className="text-xs text-gray-400">
-                        DID #{totalProf - recentProfiles.length + i + 1}
-                      </p>
-                    </div>
-                    <LevelBadge level={p.level ?? 0} size="sm" />
-                  </Link>
-                ))}
+                  )
+                })}
               </div>
             )}
           </div>
@@ -281,6 +286,14 @@ export function HomePage() {
       </footer>
 
       <CreateProfileModal open={showCreate} onClose={() => setShowCreate(false)} />
+
+      {profileCardTokenId != null && (
+        <ProfileCard
+          tokenId={profileCardTokenId}
+          onClose={() => setProfileCardTokenId(null)}
+          onNavigate={(nextId) => setProfileCardTokenId(nextId)}
+        />
+      )}
     </div>
   )
 }

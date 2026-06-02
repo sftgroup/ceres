@@ -201,6 +201,10 @@ const translations: TranslationMap = {
   'nav.profile': { en: 'My Profile', 'zh-TW': '我的檔案' },
   'nav.explore': { en: 'Explore', 'zh-TW': '探索' },
 
+  // ProfileCard
+  'profileCard.viewFullProfile': { en: 'View Full Profile →', 'zh-TW': '查看完整檔案 →' },
+  'profileCard.mintDate': { en: 'Minted', 'zh-TW': '鑄造日期' },
+
   // Common
   'common.loading': { en: 'Loading...', 'zh-TW': '加載中...' },
   'common.error': { en: 'Error', 'zh-TW': '錯誤' },
