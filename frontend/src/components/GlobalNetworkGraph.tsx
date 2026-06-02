@@ -1,18 +1,13 @@
 import { useMemo, useEffect, useRef, useState, useCallback } from 'react'
-import { useNavigate } from 'react-router-dom'
 import { useCeres } from '../hooks/useCeres'
 import { useI18n } from '../I18nContext'
+import { ProfileCard } from './ProfileCard'
 
 const MAX_NODES = 24
 
 const LEVEL_COLORS: Record<number, string> = {
   0: '#6B7280', 1: '#CD7F32', 2: '#C0C0C0',
   3: '#FFD700', 4: '#A855F7', 5: '#3B82F6',
-}
-
-const LEVEL_NAMES: Record<number, string> = {
-  0: 'Seed', 1: 'Bronze', 2: 'Silver',
-  3: 'Gold', 4: 'Crystal', 5: 'Diamond',
 }
 
 interface GraphNode {
@@ -49,11 +44,11 @@ function useGlobalGraphData() {
 
 export function GlobalNetworkGraph() {
   const { t } = useI18n()
-  const navigate = useNavigate()
   const { total, profiles, inviters } = useGlobalGraphData()
   const [tick, setTick] = useState(0)
   const [particles, setParticles] = useState<Particle[]>([])
   const [selectedNode, setSelectedNode] = useState<GraphNode | null>(null)
+  const [profileCardTokenId, setProfileCardTokenId] = useState<bigint | null>(null)
   const [isFullscreen, setIsFullscreen] = useState(false)
   const [error, setError] = useState<string | null>(null)
   const particleId = useRef(0)
@@ -120,21 +115,14 @@ export function GlobalNetworkGraph() {
   useEffect(() => { spawn(); const iv = setInterval(spawn, 2000); return () => clearInterval(iv) }, [spawn])
   useEffect(() => { setParticles(prev => prev.map(p => ({ ...p, progress: p.progress + p.speed })).filter(p => p.progress < 1)) }, [tick])
 
-  // Find inviter for selected
-  const selectedInviter = useMemo(() => {
-    if (!selectedNode || selectedNode.inviterId <= 0) return null
-    return layoutNodes.find(n => n.tokenId === selectedNode.inviterId) ?? null
-  }, [selectedNode, layoutNodes])
-
   const handleNodeClick = (n: GraphNode) => {
     const alreadySelected = selectedNode?.tokenId === n.tokenId
     setSelectedNode(alreadySelected ? null : n)
   }
 
-  const handleViewProfile = (e: React.MouseEvent) => {
-    e.stopPropagation()
+  const handleViewProfile = () => {
     if (selectedNode) {
-      navigate(`/profile/${selectedNode.tokenId}`)
+      setProfileCardTokenId(BigInt(selectedNode.tokenId))
     }
   }
 
@@ -165,7 +153,7 @@ export function GlobalNetworkGraph() {
 
   const containerClass = isFullscreen
     ? 'fixed inset-0 z-[200] bg-[#0f172a] flex flex-col'
-    : 'bg-[#0f172a] rounded-2xl border border-gray-800 p-4'
+    : 'relative bg-[#0f172a] rounded-2xl border border-gray-800 p-4'
 
   return (
     <div className="w-full">
@@ -185,12 +173,8 @@ export function GlobalNetworkGraph() {
         </div>
       </div>
 
-      {/* Graph + optional detail card */}
+      {/* Graph container */}
       <div className={containerClass} style={{ position: isFullscreen ? 'fixed' : 'relative' }}>
-        {/* Backdrop to deselect (only when a node is selected) */}
-        {selectedNode && (
-          <div className="absolute inset-0 z-10" onClick={() => setSelectedNode(null)} />
-        )}
 
         <svg viewBox="0 0 760 760" className={isFullscreen ? 'flex-1 w-full h-full' : 'w-full max-w-[760px] mx-auto'}>
           <defs>
@@ -233,7 +217,7 @@ export function GlobalNetworkGraph() {
             const r = n.radius
             return (
               <g key={n.tokenId} style={{ cursor: 'pointer' }}
-                onClick={() => handleNodeClick(n)}
+                onClick={(e) => { e.preventDefault(); handleNodeClick(n) }}
               >
                 {isSel && (
                   <circle cx={n.x} cy={n.y} r={r + 8} fill="none" stroke="#10b981" strokeWidth={2} opacity={0.8}>
@@ -280,58 +264,39 @@ export function GlobalNetworkGraph() {
           </button>
         )}
 
-        {/* Detail card */}
+        {/* Selected node indicator bar + View Profile button */}
         {selectedNode && (
-          <div
-            onClick={(e) => e.stopPropagation()}
-            className={isFullscreen
-              ? 'absolute bottom-6 left-1/2 -translate-x-1/2 z-20 bg-gray-900 border border-emerald-500/30 rounded-2xl p-5 shadow-2xl min-w-[280px]'
-              : 'absolute bottom-4 left-1/2 -translate-x-1/2 z-20 bg-gray-900 border border-emerald-500/30 rounded-2xl p-5 shadow-2xl min-w-[260px]'
-          }>
-            <div className="flex items-start gap-3">
-              <div className="w-10 h-10 rounded-full flex items-center justify-center text-white font-bold text-sm shrink-0"
-                style={{ background: LEVEL_COLORS[selectedNode.level] ?? '#6B7280' }}>
-                {selectedNode.name?.charAt(0)?.toUpperCase() ?? '#'}
-              </div>
-              <div className="flex-1 min-w-0">
-                <div className="flex items-center gap-2">
-                  <p className="font-semibold text-white text-sm truncate">
-                    {selectedNode.name || `DID #${selectedNode.tokenId}`}
-                  </p>
-                  <span className="text-[10px] px-1.5 py-0.5 rounded font-medium"
-                    style={{ background: LEVEL_COLORS[selectedNode.level] + '22', color: LEVEL_COLORS[selectedNode.level] }}>
-                    {LEVEL_NAMES[selectedNode.level]}
-                  </span>
-                </div>
-                <p className="text-xs text-gray-400 mt-0.5">DID #{selectedNode.tokenId}</p>
-                {selectedInviter ? (
-                  <p className="text-xs text-gray-500 mt-1">
-                    {t('graph.invitedBy')}{' '}
-                    <button onClick={(e) => { e.stopPropagation(); setSelectedNode(selectedInviter) }}
-                      className="text-emerald-400 hover:underline">
-                      {selectedInviter.name || `#${selectedNode.inviterId}`}
-                    </button>
-                  </p>
-                ) : selectedNode.inviterId > 0 ? (
-                  <p className="text-xs text-gray-500 mt-1">{t('graph.invitedBy')} #{selectedNode.inviterId}</p>
-                ) : (
-                  <p className="text-xs text-gray-600 mt-1">{t('graph.rootNode')}</p>
-                )}
-              </div>
+          <div className="absolute bottom-4 left-1/2 -translate-x-1/2 z-20 bg-gray-900/95 backdrop-blur border border-gray-700 rounded-xl px-4 py-2.5 flex items-center gap-3 shadow-lg">
+            <div className="w-7 h-7 rounded-full flex items-center justify-center text-white font-bold text-xs shrink-0"
+              style={{ background: LEVEL_COLORS[selectedNode.level] ?? '#6B7280' }}>
+              {selectedNode.name?.charAt(0)?.toUpperCase() ?? '#'}
             </div>
-            <div className="flex gap-2 mt-4">
-              <button onClick={handleViewProfile}
-                className="flex-1 px-4 py-2 bg-emerald-600 text-white text-sm rounded-lg hover:bg-emerald-700 transition-colors font-medium">
-                {t('graph.viewProfile')}
-              </button>
-              <button onClick={(e) => { e.stopPropagation(); setSelectedNode(null) }}
-                className="px-4 py-2 border border-gray-600 text-gray-300 text-sm rounded-lg hover:bg-gray-800 transition-colors">
-                {t('graph.close')}
-              </button>
+            <div className="text-left leading-tight min-w-0">
+              <p className="text-white text-xs font-medium truncate">{selectedNode.name || `DID #${selectedNode.tokenId}`}</p>
+              <p className="text-gray-400 text-[10px]">DID #{selectedNode.tokenId}</p>
             </div>
+            <button onClick={handleViewProfile}
+              className="ml-2 px-3 py-1 bg-emerald-600 text-white text-xs rounded-lg hover:bg-emerald-700 transition-colors font-medium whitespace-nowrap">
+              {t('graph.viewProfile')}
+            </button>
+            <button onClick={() => setSelectedNode(null)}
+              className="text-gray-400 hover:text-white transition-colors">
+              <svg className="w-4 h-4" fill="none" viewBox="0 0 24 24" stroke="currentColor">
+                <path strokeLinecap="round" strokeLinejoin="round" strokeWidth={2} d="M6 18L18 6M6 6l12 12" />
+              </svg>
+            </button>
           </div>
         )}
       </div>
+
+      {/* ProfileCard popover */}
+      {profileCardTokenId && (
+        <ProfileCard
+          tokenId={profileCardTokenId}
+          onClose={() => setProfileCardTokenId(null)}
+          onNavigate={(nextId) => setProfileCardTokenId(nextId)}
+        />
+      )}
     </div>
   )
 }
