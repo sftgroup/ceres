@@ -14,7 +14,7 @@ interface CreateProfileModalProps {
 export function CreateProfileModal({ open, onClose, onCreated }: CreateProfileModalProps) {
   const { t } = useI18n()
   const { address } = useAccount()
-  const { createProfile, useMintFee, useMintFeeEnabled, useProfileCount } = useCeres()
+  const { createProfile, useMintFee, useMintFeeEnabled, useProfileCount, invalidateAll } = useCeres()
   const [searchParams] = useSearchParams()
 
   const { data: mintFeeData } = useMintFee()
@@ -46,6 +46,8 @@ export function CreateProfileModal({ open, onClose, onCreated }: CreateProfileMo
       const inviterId = inviter ? BigInt(inviter) : 0n
       const feeValue = mintFeeEnabled ? mintFeeWei : undefined
       const hash = await createProfile(name, bio, avatar, urlList, inviterId, feeValue)
+      // Refresh all cached data so UI updates without manual refresh
+      invalidateAll()
       setSuccess(hash as unknown as bigint)
       onCreated?.(hash as unknown as bigint)
     } catch (e) {
@@ -91,19 +93,22 @@ export function CreateProfileModal({ open, onClose, onCreated }: CreateProfileMo
             </div>
           </div>
         ) : success !== null ? (
-          <div className="text-center py-8">
-            <div className="w-16 h-16 mx-auto mb-4 bg-emerald-100 rounded-full flex items-center justify-center">
-              <svg className="w-8 h-8 text-emerald-600" fill="none" viewBox="0 0 24 24" stroke="currentColor">
+          /* Compact success — gets dismissed automatically */
+          <div className="text-center py-6">
+            <div className="w-14 h-14 mx-auto mb-3 bg-emerald-100 rounded-full flex items-center justify-center">
+              <svg className="w-7 h-7 text-emerald-600" fill="none" viewBox="0 0 24 24" stroke="currentColor">
                 <path strokeLinecap="round" strokeLinejoin="round" strokeWidth={2} d="M5 13l4 4L19 7" />
               </svg>
             </div>
-            <h3 className="text-lg font-semibold text-gray-900">{t('create.success')}</h3>
-            <p className="text-sm text-gray-500 mt-2">Token ID: {String(success)}</p>
+            <h3 className="text-lg font-semibold text-gray-900">Profile Created!</h3>
+            <p className="text-sm text-gray-500 mt-1">
+              DID #<span className="font-mono text-emerald-600">{String(success)}</span>
+            </p>
             <button
               onClick={onClose}
-              className="mt-6 px-6 py-2 bg-emerald-600 text-white rounded-lg hover:bg-emerald-700 transition-colors"
+              className="mt-4 px-8 py-2 bg-emerald-600 text-white rounded-lg hover:bg-emerald-700 transition-colors font-medium"
             >
-              OK
+              Done
             </button>
           </div>
         ) : (

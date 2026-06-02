@@ -1,4 +1,4 @@
-import { useState } from 'react'
+import { useState, useMemo } from 'react'
 import { Link } from 'react-router-dom'
 import { useAccount } from 'wagmi'
 import { useCeres } from '../hooks/useCeres'
@@ -15,6 +15,15 @@ const LEVELS = [
   { level: 5, icon: '🔷', desc: '≥ 1000 descendants' },
 ]
 
+/** Query the most recent N profiles by tokenId */
+function useRecentProfiles(count: number) {
+  const { useProfile } = useCeres()
+  return Array.from({ length: count }, (_, i) => {
+    // eslint-disable-next-line react-hooks/rules-of-hooks
+    return useProfile(BigInt(count - i))
+  })
+}
+
 export function HomePage() {
   const { t } = useI18n()
   const { isConnected } = useAccount()
@@ -28,6 +37,17 @@ export function HomePage() {
   const totalProf = totalProfiles != null ? Number(totalProfiles) : 0
   const totalSup = totalSupply != null ? Number(totalSupply) : 0
   const hasProfile = profileCount != null && Number(profileCount) > 0
+
+  // Recent profiles — show latest 6
+  const recentCount = Math.min(totalProf, 6)
+  const recentQueries = useRecentProfiles(recentCount)
+  const recentProfiles = useMemo(() => {
+    return recentQueries
+      .map((q) => q.data)
+      .filter(Boolean)
+      .filter((p: any) => p?.name)
+      .slice(0, 6)
+  }, [recentQueries])
 
   return (
     <div className="min-h-screen">
@@ -101,27 +121,113 @@ export function HomePage() {
         </div>
       </section>
 
-      {/* Level Showcase */}
+      {/* 🌐 All Networks Module */}
       <section className="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8 py-16">
         <div className="text-center mb-12">
-          <h2 className="text-3xl font-bold text-gray-900 mb-2">{t('home.levels.title')}</h2>
-          <p className="text-gray-500">{t('home.levels.desc')}</p>
+          <h2 className="text-3xl font-bold text-gray-900 mb-2">🌐 Ceres Network</h2>
+          <p className="text-gray-500">Explore all DIDs on the global social graph</p>
         </div>
-        <div className="grid grid-cols-2 sm:grid-cols-3 md:grid-cols-6 gap-4">
-          {LEVELS.map((l) => (
-            <div
-              key={l.level}
-              className="bg-white rounded-xl border border-gray-100 shadow-sm p-4 text-center hover:shadow-md hover:-translate-y-0.5 transition-all group"
-            >
-              <div className="text-3xl mb-2">{l.icon}</div>
-              <LevelBadge level={l.level} size="sm" />
-              <p className="text-xs text-gray-400 mt-2 leading-tight">{l.desc}</p>
+
+        <div className="grid gap-8 lg:grid-cols-2">
+          {/* Network Overview Card */}
+          <div className="bg-white rounded-2xl border border-gray-100 shadow-sm p-6">
+            <h3 className="text-lg font-semibold text-gray-900 mb-6">Network Overview</h3>
+            <div className="space-y-4">
+              <div className="flex items-center justify-between p-4 bg-emerald-50 rounded-xl">
+                <div className="flex items-center gap-3">
+                  <div className="w-10 h-10 bg-emerald-100 rounded-full flex items-center justify-center text-lg">🌱</div>
+                  <div>
+                    <p className="text-sm text-gray-500">Total DIDs</p>
+                    <p className="text-xl font-bold text-emerald-700">{totalProf.toLocaleString()}</p>
+                  </div>
+                </div>
+                <Link to="/search" className="text-xs text-emerald-600 hover:text-emerald-700 font-medium">
+                  Search →
+                </Link>
+              </div>
+
+              <div className="flex items-center justify-between p-4 bg-teal-50 rounded-xl">
+                <div className="flex items-center gap-3">
+                  <div className="w-10 h-10 bg-teal-100 rounded-full flex items-center justify-center text-lg">🔗</div>
+                  <div>
+                    <p className="text-sm text-gray-500">Total Invitations</p>
+                    <p className="text-xl font-bold text-teal-700">{totalSup.toLocaleString()}</p>
+                  </div>
+                </div>
+              </div>
+
+              <div className="flex items-center justify-between p-4 bg-amber-50 rounded-xl">
+                <div className="flex items-center gap-3">
+                  <div className="w-10 h-10 bg-amber-100 rounded-full flex items-center justify-center text-lg">📊</div>
+                  <div>
+                    <p className="text-sm text-gray-500">Network Density</p>
+                    <p className="text-xl font-bold text-amber-700">
+                      {totalProf > 0 ? ((totalSup / totalProf)).toFixed(1) : '—'}
+                    </p>
+                  </div>
+                </div>
+                <span className="text-xs text-amber-500">conn/DID</span>
+              </div>
             </div>
-          ))}
+          </div>
+
+          {/* Recent Members Card */}
+          <div className="bg-white rounded-2xl border border-gray-100 shadow-sm p-6">
+            <div className="flex items-center justify-between mb-6">
+              <h3 className="text-lg font-semibold text-gray-900">Recent Members</h3>
+              <Link to="/search" className="text-xs text-emerald-600 hover:text-emerald-700 font-medium">
+                View All →
+              </Link>
+            </div>
+
+            {recentProfiles.length === 0 ? (
+              <div className="text-center py-12 text-gray-400">
+                <div className="text-4xl mb-3">🌾</div>
+                <p className="text-sm">No profiles yet — be the first!</p>
+              </div>
+            ) : (
+              <div className="space-y-3">
+                {recentProfiles.map((p: any, i: number) => (
+                  <Link
+                    key={i}
+                    to={`/profile/${totalProf - recentProfiles.length + i + 1}`}
+                    className="flex items-center gap-3 p-3 rounded-xl hover:bg-gray-50 transition-colors group"
+                  >
+                    <div className="w-10 h-10 bg-gradient-to-br from-emerald-400 to-teal-500 rounded-full flex items-center justify-center text-white font-bold text-sm shrink-0">
+                      {p.name?.charAt(0)?.toUpperCase() ?? '?'}
+                    </div>
+                    <div className="flex-1 min-w-0">
+                      <p className="font-medium text-gray-900 text-sm group-hover:text-emerald-600 transition-colors truncate">
+                        {p.name || 'Unknown'}
+                      </p>
+                      <p className="text-xs text-gray-400">
+                        DID #{totalProf - recentProfiles.length + i + 1}
+                      </p>
+                    </div>
+                    <LevelBadge level={p.level ?? 0} size="sm" />
+                  </Link>
+                ))}
+              </div>
+            )}
+          </div>
+        </div>
+
+        {/* Level Distribution */}
+        <div className="mt-8 bg-white rounded-2xl border border-gray-100 shadow-sm p-6">
+          <h3 className="text-lg font-semibold text-gray-900 mb-6">Level Distribution</h3>
+          <div className="grid grid-cols-3 sm:grid-cols-6 gap-3">
+            {LEVELS.map((l) => (
+              <div key={l.level} className="text-center p-4 rounded-xl bg-gray-50 hover:bg-emerald-50 transition-colors group">
+                <div className="text-2xl mb-2">{l.icon}</div>
+                <LevelBadge level={l.level} size="sm" />
+                <p className="text-[10px] text-gray-400 mt-1 leading-tight">{l.desc}</p>
+              </div>
+            ))}
+          </div>
         </div>
       </section>
 
-      {/* CTA Section */}
+      {/* CTA */}
       <section className="bg-gradient-to-r from-emerald-600 to-teal-500">
         <div className="max-w-4xl mx-auto px-4 sm:px-6 lg:px-8 py-16 text-center">
           <h2 className="text-3xl font-bold text-white mb-4">Ready to build your network?</h2>
@@ -129,21 +235,12 @@ export function HomePage() {
             Mint your DID NFT and start inviting friends. Your social graph, on chain.
           </p>
           <div className="flex flex-col sm:flex-row gap-4 justify-center">
-            {isConnected && hasProfile ? (
-              <Link
-                to="/search"
-                className="px-8 py-3 bg-white text-emerald-700 font-semibold rounded-xl hover:bg-emerald-50 transition-colors shadow-lg"
-              >
-                {t('nav.search')}
-              </Link>
-            ) : (
-              <button
-                onClick={() => setShowCreate(true)}
-                className="px-8 py-3 bg-white text-emerald-700 font-semibold rounded-xl hover:bg-emerald-50 transition-colors shadow-lg"
-              >
-                {t('home.hero.cta')}
-              </button>
-            )}
+            <button
+              onClick={() => setShowCreate(true)}
+              className="px-8 py-3 bg-white text-emerald-700 font-semibold rounded-xl hover:bg-emerald-50 transition-colors shadow-lg"
+            >
+              {t('home.hero.cta')}
+            </button>
             <Link
               to="/search"
               className="px-8 py-3 border-2 border-white/30 text-white font-semibold rounded-xl hover:bg-white/10 transition-colors"
@@ -159,17 +256,13 @@ export function HomePage() {
         <div className="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8 py-8">
           <div className="flex flex-col sm:flex-row items-center justify-between gap-4">
             <div className="flex items-center gap-2 text-gray-400 text-sm">
-              <div className="w-6 h-6 bg-gradient-to-br from-emerald-500 to-teal-600 rounded flex items-center justify-center text-white font-bold text-xs">
-                C
-              </div>
+              <div className="w-6 h-6 bg-gradient-to-br from-emerald-500 to-teal-600 rounded flex items-center justify-center text-white font-bold text-xs">C</div>
               Ceres — Decentralized Social Graph
             </div>
             <div className="flex items-center gap-4 text-sm text-gray-400">
               <span>Sepolia Testnet</span>
               <span>·</span>
-              <a href="https://github.com/sftgroup/ceres" target="_blank" rel="noopener noreferrer" className="hover:text-emerald-600 transition-colors">
-                GitHub
-              </a>
+              <a href="https://github.com/sftgroup/ceres" target="_blank" rel="noopener noreferrer" className="hover:text-emerald-600 transition-colors">GitHub</a>
             </div>
           </div>
         </div>

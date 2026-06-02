@@ -8,7 +8,7 @@ import { ConnectButton } from '../components/ConnectButton'
 export function MintPage() {
   const { t } = useI18n()
   const { address, isConnected } = useAccount()
-  const { createProfile, useProfile, useMintFee, useMintFeeEnabled, useBalanceOf, useUserTokenId } = useCeres()
+  const { createProfile, useProfile, useMintFee, useMintFeeEnabled, useBalanceOf, useUserTokenId, invalidateAll } = useCeres()
   const [searchParams] = useSearchParams()
   const navigate = useNavigate()
 
@@ -49,7 +49,8 @@ export function MintPage() {
       const inviterId = inviterTokenId ?? 0n
       const feeValue = mintFeeEnabled ? mintFeeWei : undefined
       const hash = await createProfile(name, bio, avatar, urlList, inviterId, feeValue)
-      // Mark as successful; the useEffect below handles redirect to /invite
+      // Refresh all cached data so redirect shows updated state
+      invalidateAll()
       setSuccessTokenId(hash as unknown as bigint)
     } catch (e) {
       setError(e instanceof Error ? e.message : 'Transaction failed')

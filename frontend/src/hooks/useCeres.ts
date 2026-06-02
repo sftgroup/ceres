@@ -291,6 +291,11 @@ export function useCeres() {
     [queryClient],
   )
 
+  /** Invalidate all global profile queries — used after mint to refresh UI */
+  const invalidateAll = useCallback(() => {
+    queryClient.invalidateQueries({ queryKey: ['readContract'] })
+  }, [queryClient])
+
   return {
     address,
     useProfileCount,
@@ -317,6 +322,7 @@ export function useCeres() {
     getLevelName,
     getLevelColor,
     invalidateProfile,
+    invalidateAll,
     LEVEL_NAMES,
   }
 }
