@@ -21,7 +21,7 @@ const queryClient = new QueryClient({
   },
 })
 
-class ErrorBoundary extends Component<{ children: React.ReactNode }, { error: string | null }> {
+class AppErrorBoundary extends Component<{ children: React.ReactNode }, { error: string | null }> {
   state = { error: null as string | null }
   static getDerivedStateFromError(e: Error) { return { error: e.message } }
   render() {
@@ -76,9 +76,6 @@ function WalletSync({ children }: { children: React.ReactNode }) {
     }
   }, [isConnected, connectors, connect])
 
-  // wagmi v3 handles accountsChanged / chainChanged / disconnect
-  // internally via EIP-6963 connector providers. No need for manual listeners.
-
   return <>{children}</>
 }
 
@@ -88,23 +85,23 @@ function App() {
       <QueryClientProvider client={queryClient}>
         <I18nProvider>
           <BrowserRouter>
-            <ErrorBoundary>
-            <WalletSync>
-              <div className="min-h-screen bg-gray-50">
-                <Navbar />
-                <main>
-                  <Routes>
-                    <Route path="/" element={<HomePage />} />
-                    <Route path="/profile/:tokenId" element={<ProfilePage />} />
-                    <Route path="/invite" element={<InvitePage />} />
-                    <Route path="/mint" element={<MintPage />} />
-                    <Route path="/search" element={<SearchPage />} />
-                    <Route path="/admin" element={<AdminPage />} />
-                  </Routes>
-                </main>
-              </div>
+            <AppErrorBoundary>
+              <WalletSync>
+                <div className="min-h-screen bg-gray-50">
+                  <Navbar />
+                  <main>
+                    <Routes>
+                      <Route path="/" element={<HomePage />} />
+                      <Route path="/profile/:tokenId" element={<ProfilePage />} />
+                      <Route path="/invite" element={<InvitePage />} />
+                      <Route path="/mint" element={<MintPage />} />
+                      <Route path="/search" element={<SearchPage />} />
+                      <Route path="/admin" element={<AdminPage />} />
+                    </Routes>
+                  </main>
+                </div>
               </WalletSync>
-            </ErrorBoundary>
+            </AppErrorBoundary>
           </BrowserRouter>
         </I18nProvider>
       </QueryClientProvider>

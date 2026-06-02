@@ -89,9 +89,9 @@ export function ProfilePage() {
       <div className="max-w-4xl mx-auto px-4 py-16 text-center">
         <div className="text-6xl mb-4">🔍</div>
         <h2 className="text-xl font-semibold text-gray-900 mb-2">{t('profile.notFound')}</h2>
-        <p className="text-gray-500">DID #{tokenIdParam} does not exist</p>
+        <p className="text-gray-500">{t('profile.notFoundDesc').replace('#', `#${tokenIdParam}`)}</p>
         <Link to="/" className="inline-block mt-6 text-emerald-600 hover:text-emerald-700 font-medium">
-          ← Back home
+          {t('profile.backHome')}
         </Link>
       </div>
     )
@@ -137,10 +137,9 @@ export function ProfilePage() {
                 placeholder="Bio"
               />
             ) : (
-              <p className="text-gray-600 mb-3">{profile.bio || 'No bio yet'}</p>
+              <p className="text-gray-600 mb-3">{profile.bio || t('profile.noBio')}</p>
             )}
 
-            {/* Owner info */}
             <p className="text-sm text-gray-400">
               {t('profile.tokenId')}: #{tokenIdParam}
               {profile.owner && (
@@ -151,7 +150,6 @@ export function ProfilePage() {
               )}
             </p>
 
-            {/* Edit URLs section */}
             {editing && (
               <div className="mt-3 space-y-2">
                 <label className="block text-sm font-medium text-gray-700">{t('profile.avatar')}</label>
@@ -173,7 +171,6 @@ export function ProfilePage() {
               </div>
             )}
 
-            {/* Action Buttons */}
             <div className="flex flex-wrap gap-3 mt-4">
               {isOwner && !editing && (
                 <button
@@ -204,7 +201,6 @@ export function ProfilePage() {
           </div>
         </div>
 
-        {/* URLs display */}
         {!editing && profile.avatar && (
           <div className="mt-4 pt-4 border-t border-gray-100">
             <div className="flex flex-wrap gap-2">
@@ -261,7 +257,7 @@ export function ProfilePage() {
                 )}
               </div>
             ) : (
-              <p className="text-sm text-gray-400">No inviter — this is an origin profile</p>
+              <p className="text-sm text-gray-400">{t('profile.noInviter')}</p>
             )}
           </div>
 
@@ -285,7 +281,7 @@ export function ProfilePage() {
         <div className="space-y-6">
           {/* Stats */}
           <div className="bg-white rounded-2xl border border-gray-100 shadow-sm p-6">
-            <h3 className="text-lg font-semibold text-gray-900 mb-4">Statistics</h3>
+            <h3 className="text-lg font-semibold text-gray-900 mb-4">{t('profile.stats')}</h3>
             <div className="space-y-4">
               <div className="flex justify-between items-center">
                 <span className="text-sm text-gray-500">{t('profile.directInvites')}</span>
@@ -304,17 +300,17 @@ export function ProfilePage() {
 
           {/* Level Info */}
           <div className="bg-gradient-to-br from-emerald-50 to-teal-50 rounded-2xl border border-emerald-100 p-6">
-            <h3 className="text-sm font-semibold text-emerald-800 mb-2">How to level up</h3>
+            <h3 className="text-sm font-semibold text-emerald-800 mb-2">{t('profile.levelUp')}</h3>
             <p className="text-xs text-emerald-700 leading-relaxed">
-              Level increases based on total descendant count. Invite more people and help your network grow!
+              {t('profile.levelUpDesc')}
             </p>
             <div className="mt-3 space-y-1 text-xs text-emerald-600">
-              <div>🌱 Seed → 0</div>
-              <div>🥉 Bronze → ≥ 3</div>
-              <div>🥈 Silver → ≥ 10</div>
-              <div>🥇 Gold → ≥ 50</div>
-              <div>💎 Crystal → ≥ 200</div>
-              <div>🔷 Diamond → ≥ 1000</div>
+              <div>🌱 {t('level.seed')} → 0</div>
+              <div>🥉 {t('level.bronze')} → ≥ 3</div>
+              <div>🥈 {t('level.silver')} → ≥ 10</div>
+              <div>🥇 {t('level.gold')} → ≥ 50</div>
+              <div>💎 {t('level.crystal')} → ≥ 200</div>
+              <div>🔷 {t('level.diamond')} → ≥ 1000</div>
             </div>
           </div>
         </div>

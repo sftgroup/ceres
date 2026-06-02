@@ -51,25 +51,22 @@ export function ConnectButton({ variant = 'header', className = '' }: ConnectBut
     setDropdownOpen(false)
   }
 
-  /** Disconnect → clear cache → page reload → WalletSync auto-connects to chosen wallet */
   const doSwitchAccount = (c: (typeof connectors)[number]) => {
     setOpenModal(null)
     sessionStorage.setItem('ceres_reconnect', c.id || c.uid || c.name)
     disconnect()
-    // Clear wagmi persisted state so reload starts clean
     Object.keys(localStorage).forEach((k) => {
       if (k.startsWith('wagmi')) localStorage.removeItem(k)
     })
     window.location.reload()
   }
 
-  // ── Wallet list modal (shared by Connect and Switch Account) ──
   const showModal = openModal !== null
-  const modalTitle = openModal === 'connect' ? 'Connect Wallet' : 'Switch Account'
+  const modalTitle = openModal === 'connect' ? t('common.connect') : t('common.switchAccount')
   const modalHint =
     openModal === 'connect'
-      ? 'Choose your wallet to connect to Ceres on Sepolia.'
-      : 'Choose a wallet and pick a new account.'
+      ? t('common.chooseWallet')
+      : t('common.chooseNewAccount')
 
   return (
     <>
@@ -100,7 +97,7 @@ export function ConnectButton({ variant = 'header', className = '' }: ConnectBut
                   className="w-full flex items-center gap-2 px-4 py-2.5 text-sm text-gray-700 hover:bg-gray-50 transition-colors text-left"
                 >
                   <CopyIcon />
-                  {copied ? '✓ Copied!' : 'Copy Address'}
+                  {copied ? t('common.copied') : t('common.copyAddress')}
                 </button>
 
                 {userTokenId != null && (
@@ -109,7 +106,7 @@ export function ConnectButton({ variant = 'header', className = '' }: ConnectBut
                     className="w-full flex items-center gap-2 px-4 py-2.5 text-sm text-gray-700 hover:bg-gray-50 transition-colors text-left"
                   >
                     <ProfileIcon />
-                    View Profile
+                    {t('common.viewProfile')}
                   </button>
                 )}
 
@@ -123,7 +120,7 @@ export function ConnectButton({ variant = 'header', className = '' }: ConnectBut
                   className="w-full flex items-center gap-2 px-4 py-2.5 text-sm text-gray-700 hover:bg-gray-50 transition-colors text-left"
                 >
                   <SwitchIcon />
-                  Switch Account
+                  {t('common.switchAccount')}
                 </button>
 
                 <button
@@ -131,7 +128,7 @@ export function ConnectButton({ variant = 'header', className = '' }: ConnectBut
                   className="w-full flex items-center gap-2 px-4 py-2.5 text-sm text-red-600 hover:bg-red-50 transition-colors text-left"
                 >
                   <LogoutIcon />
-                  Disconnect
+                  {t('common.disconnect')}
                 </button>
               </div>
             </>
@@ -195,7 +192,7 @@ export function ConnectButton({ variant = 'header', className = '' }: ConnectBut
                   </div>
                   <div className="flex-1 min-w-0">
                     <p className="font-semibold text-gray-900 text-sm">{c.name}</p>
-                    <p className="text-xs text-gray-400">Detected</p>
+                    <p className="text-xs text-gray-400">{t('common.detected')}</p>
                   </div>
                   <ArrowRightIcon />
                 </button>
@@ -204,9 +201,9 @@ export function ConnectButton({ variant = 'header', className = '' }: ConnectBut
               {connectors.length === 0 && (
                 <div className="text-center py-8">
                   <div className="text-4xl mb-3">🦊</div>
-                  <p className="text-sm font-medium text-gray-700 mb-1">No wallet detected</p>
+                  <p className="text-sm font-medium text-gray-700 mb-1">{t('common.noWallet')}</p>
                   <p className="text-xs text-gray-400">
-                    Please install MetaMask or OKX Wallet and refresh.
+                    {t('common.installWallet')}
                   </p>
                 </div>
               )}
@@ -214,8 +211,8 @@ export function ConnectButton({ variant = 'header', className = '' }: ConnectBut
 
             <p className="text-xs text-gray-400 text-center mt-6">
               {openModal === 'connect'
-                ? 'By connecting, you agree to use Sepolia testnet.'
-                : 'Your browser will reload — wallet will show the account picker.'}
+                ? t('common.agreeConnect')
+                : t('common.reloadHint')}
             </p>
           </div>
         </div>

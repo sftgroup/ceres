@@ -24,10 +24,8 @@ export function InvitePage() {
   const handleCopy = async () => {
     if (!inviteUrl) return
     try {
-      // HTTPS: use Clipboard API
       await navigator.clipboard.writeText(inviteUrl)
     } catch {
-      // HTTP fallback
       const ta = document.createElement('textarea')
       ta.value = inviteUrl
       ta.style.position = 'fixed'
@@ -46,22 +44,21 @@ export function InvitePage() {
       <div className="min-h-screen bg-gradient-to-br from-emerald-50 via-white to-teal-50 flex items-center justify-center">
         <div className="max-w-md mx-auto px-4 py-16 text-center">
           <div className="text-6xl mb-6">🔗</div>
-          <h2 className="text-2xl font-bold text-gray-900 mb-3">Connect Your Wallet</h2>
-          <p className="text-gray-500 mb-8">Connect your wallet to view your invite link and grow your network.</p>
+          <h2 className="text-2xl font-bold text-gray-900 mb-3">{t('invite.connectWallet')}</h2>
+          <p className="text-gray-500 mb-8">{t('invite.connectDesc')}</p>
           <ConnectButton variant="cta" />
         </div>
       </div>
     )
   }
 
-  // User does NOT have a DID — prompt to create one
   if (!hasCeresDID) {
     return (
       <div className="max-w-2xl mx-auto px-4 py-16 text-center">
         <div className="text-6xl mb-4">🌱</div>
         <h2 className="text-xl font-semibold text-gray-900 mb-2">{t('invite.noProfile')}</h2>
         <p className="text-gray-500 mb-6">
-          You need a DID profile before you can invite others. Create one now to get your invite link!
+          {t('invite.needDidDesc')}
         </p>
         <Link
           to="/mint"
@@ -99,7 +96,7 @@ export function InvitePage() {
         {userTokenId ? (
           <>
             <p className="text-sm text-gray-500 mb-4">
-              Share this link with friends to grow your network:
+              {t('invite.shareDesc')}
             </p>
             <div className="p-4 bg-gray-50 rounded-xl">
               <div className="flex items-center gap-3">
@@ -132,7 +129,7 @@ export function InvitePage() {
         ) : (
           <div className="text-center py-4">
             <div className="animate-spin w-6 h-6 border-2 border-emerald-600 border-t-transparent rounded-full mx-auto" />
-            <p className="text-sm text-gray-400 mt-2">Detecting your DID...</p>
+            <p className="text-sm text-gray-400 mt-2">{t('invite.detecting')}</p>
           </div>
         )}
       </div>
@@ -146,23 +143,23 @@ export function InvitePage() {
 
       {/* Tips */}
       <div className="bg-white rounded-2xl border border-gray-100 shadow-sm p-6">
-        <h2 className="text-lg font-semibold text-gray-900 mb-4">Tips</h2>
+        <h2 className="text-lg font-semibold text-gray-900 mb-4">{t('invite.tips')}</h2>
         <ul className="space-y-3 text-sm text-gray-600">
           <li className="flex items-start gap-2">
             <span className="text-emerald-500 mt-0.5">✓</span>
-            Share your invite link on social media to grow your network
+            {t('invite.tip1')}
           </li>
           <li className="flex items-start gap-2">
             <span className="text-emerald-500 mt-0.5">✓</span>
-            Each person you invite becomes part of your descendant tree
+            {t('invite.tip2')}
           </li>
           <li className="flex items-start gap-2">
             <span className="text-emerald-500 mt-0.5">✓</span>
-            Your level increases as your descendant count grows
+            {t('invite.tip3')}
           </li>
           <li className="flex items-start gap-2">
             <span className="text-emerald-500 mt-0.5">✓</span>
-            DID NFTs are transferable — relationships follow the NFT
+            {t('invite.tip4')}
           </li>
         </ul>
       </div>

@@ -46,7 +46,6 @@ export function CreateProfileModal({ open, onClose, onCreated }: CreateProfileMo
       const inviterId = inviter ? BigInt(inviter) : 0n
       const feeValue = mintFeeEnabled ? mintFeeWei : undefined
       const hash = await createProfile(name, bio, avatar, urlList, inviterId, feeValue)
-      // Refresh all cached data so UI updates without manual refresh
       invalidateAll()
       setSuccess(hash as unknown as bigint)
       onCreated?.(hash as unknown as bigint)
@@ -75,32 +74,31 @@ export function CreateProfileModal({ open, onClose, onCreated }: CreateProfileMo
                 <path strokeLinecap="round" strokeLinejoin="round" strokeWidth={2} d="M12 9v2m0 4h.01m-6.938 4h13.856c1.54 0 2.502-1.667 1.732-2.5L13.732 4c-.77-.833-1.964-.833-2.732 0L4.082 16.5c-.77.833.192 2.5 1.732 2.5z" />
               </svg>
             </div>
-            <h3 className="text-lg font-semibold text-gray-900">You already have a DID</h3>
-            <p className="text-sm text-gray-500 mt-2">Each address can only create one DID profile.</p>
+            <h3 className="text-lg font-semibold text-gray-900">{t('create.alreadyHave')}</h3>
+            <p className="text-sm text-gray-500 mt-2">{t('create.alreadyHaveDesc')}</p>
             <div className="mt-6 flex gap-3 justify-center">
               <Link
                 to="/search"
                 className="px-6 py-2 bg-emerald-600 text-white rounded-lg hover:bg-emerald-700 transition-colors font-medium"
               >
-                Search Profiles
+                {t('create.searchProfiles')}
               </Link>
               <button
                 onClick={onClose}
                 className="px-6 py-2 border border-gray-300 text-gray-700 rounded-lg hover:bg-gray-50 transition-colors font-medium"
               >
-                Close
+                {t('create.close')}
               </button>
             </div>
           </div>
         ) : success !== null ? (
-          /* Compact success — gets dismissed automatically */
           <div className="text-center py-6">
             <div className="w-14 h-14 mx-auto mb-3 bg-emerald-100 rounded-full flex items-center justify-center">
               <svg className="w-7 h-7 text-emerald-600" fill="none" viewBox="0 0 24 24" stroke="currentColor">
                 <path strokeLinecap="round" strokeLinejoin="round" strokeWidth={2} d="M5 13l4 4L19 7" />
               </svg>
             </div>
-            <h3 className="text-lg font-semibold text-gray-900">Profile Created!</h3>
+            <h3 className="text-lg font-semibold text-gray-900">{t('create.created')}</h3>
             <p className="text-sm text-gray-500 mt-1">
               DID #<span className="font-mono text-emerald-600">{String(success)}</span>
             </p>
@@ -108,7 +106,7 @@ export function CreateProfileModal({ open, onClose, onCreated }: CreateProfileMo
               onClick={onClose}
               className="mt-4 px-8 py-2 bg-emerald-600 text-white rounded-lg hover:bg-emerald-700 transition-colors font-medium"
             >
-              Done
+              {t('create.done')}
             </button>
           </div>
         ) : (
@@ -171,7 +169,7 @@ export function CreateProfileModal({ open, onClose, onCreated }: CreateProfileMo
                 <div className="flex items-center gap-2">
                   <span>💰</span>
                   <span className="text-sm font-medium text-amber-800">
-                    Mint Fee: {mintFeeEth} ETH
+                    {t('create.mintFee', { fee: mintFeeEth })}
                   </span>
                 </div>
               </div>

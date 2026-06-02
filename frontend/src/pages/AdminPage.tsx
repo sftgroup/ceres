@@ -2,8 +2,10 @@ import { useState } from 'react'
 import { useAccount } from 'wagmi'
 import { formatEther, parseEther } from 'viem'
 import { useCeres } from '../hooks/useCeres'
+import { useI18n } from '../I18nContext'
 
 export function AdminPage() {
+  const { t } = useI18n()
   const { isConnected } = useAccount()
   const {
     useIsOwner,
@@ -35,7 +37,7 @@ export function AdminPage() {
       await toggleMintFee(!mintFeeEnabled)
       await refetchMintFeeEnabled()
     } catch (e) {
-      setError(e instanceof Error ? e.message : 'Toggle failed')
+      setError(e instanceof Error ? e.message : t('admin.toggleFailed'))
     } finally {
       setLoading(null)
     }
@@ -43,7 +45,7 @@ export function AdminPage() {
 
   const handleSetFee = async () => {
     if (!feeInput || Number(feeInput) <= 0) {
-      setError('Please enter a valid fee amount')
+      setError(t('admin.invalidFee'))
       return
     }
     setError('')
@@ -54,7 +56,7 @@ export function AdminPage() {
       setFeeInput('')
       await refetchMintFee()
     } catch (e) {
-      setError(e instanceof Error ? e.message : 'Set fee failed')
+      setError(e instanceof Error ? e.message : t('admin.setFeeFailed'))
     } finally {
       setLoading(null)
     }
@@ -62,7 +64,7 @@ export function AdminPage() {
 
   const handleWithdraw = async () => {
     if (contractBalance === 0n) {
-      setError('No balance to withdraw')
+      setError(t('admin.noBalanceToWithdraw'))
       return
     }
     setError('')
@@ -71,7 +73,7 @@ export function AdminPage() {
       await withdrawFees()
       await refetchBalance()
     } catch (e) {
-      setError(e instanceof Error ? e.message : 'Withdraw failed')
+      setError(e instanceof Error ? e.message : t('admin.withdrawFailed'))
     } finally {
       setLoading(null)
     }
@@ -81,8 +83,8 @@ export function AdminPage() {
     return (
       <div className="max-w-2xl mx-auto px-4 py-16 text-center">
         <div className="text-6xl mb-4">🔒</div>
-        <h2 className="text-xl font-semibold text-gray-900 mb-2">Connect Your Wallet</h2>
-        <p className="text-gray-500">Connect your wallet to access the admin dashboard.</p>
+        <h2 className="text-xl font-semibold text-gray-900 mb-2">{t('admin.connectWallet')}</h2>
+        <p className="text-gray-500">{t('admin.connectDesc')}</p>
       </div>
     )
   }
@@ -91,9 +93,9 @@ export function AdminPage() {
     return (
       <div className="max-w-2xl mx-auto px-4 py-16 text-center">
         <div className="text-6xl mb-4">🚫</div>
-        <h2 className="text-xl font-semibold text-gray-900 mb-2">Access Denied</h2>
+        <h2 className="text-xl font-semibold text-gray-900 mb-2">{t('admin.accessDenied')}</h2>
         <p className="text-gray-500">
-          You are not the contract owner. Only the owner of the CeresRegistry contract can access this page.
+          {t('admin.notOwner')}
         </p>
       </div>
     )
@@ -103,8 +105,8 @@ export function AdminPage() {
     <div className="max-w-2xl mx-auto px-4 sm:px-6 lg:px-8 py-12">
       <div className="text-center mb-10">
         <div className="text-5xl mb-4">⚙️</div>
-        <h1 className="text-3xl font-bold text-gray-900 mb-2">Admin Dashboard</h1>
-        <p className="text-gray-500">Manage CeresRegistry contract settings</p>
+        <h1 className="text-3xl font-bold text-gray-900 mb-2">{t('admin.title')}</h1>
+        <p className="text-gray-500">{t('admin.desc')}</p>
       </div>
 
       {error && (
@@ -115,13 +117,13 @@ export function AdminPage() {
 
       {/* Mint Fee Toggle */}
       <div className="bg-white rounded-2xl border border-gray-100 shadow-sm p-6 mb-6">
-        <h2 className="text-lg font-semibold text-gray-900 mb-4">Mint Fee</h2>
+        <h2 className="text-lg font-semibold text-gray-900 mb-4">{t('admin.mintFee')}</h2>
 
         <div className="flex items-center justify-between mb-3">
-          <span className="text-sm text-gray-600">Status</span>
+          <span className="text-sm text-gray-600">{t('admin.status')}</span>
           <div className="flex items-center gap-3">
             <span className={`text-sm font-medium ${mintFeeEnabled ? 'text-emerald-600' : 'text-gray-400'}`}>
-              {mintFeeEnabled ? 'Enabled' : 'Disabled'}
+              {mintFeeEnabled ? t('admin.enabled') : t('admin.disabled')}
             </span>
             <button
               onClick={handleToggleMintFee}
@@ -140,7 +142,7 @@ export function AdminPage() {
         </div>
 
         <div className="flex items-center justify-between text-sm">
-          <span className="text-gray-500">Current Fee</span>
+          <span className="text-gray-500">{t('admin.currentFee')}</span>
           <span className="font-semibold text-gray-900">
             {formatEther(mintFeeWei)} ETH
           </span>
@@ -149,7 +151,7 @@ export function AdminPage() {
 
       {/* Set Fee Amount */}
       <div className="bg-white rounded-2xl border border-gray-100 shadow-sm p-6 mb-6">
-        <h2 className="text-lg font-semibold text-gray-900 mb-4">Set Fee Amount</h2>
+        <h2 className="text-lg font-semibold text-gray-900 mb-4">{t('admin.setFee')}</h2>
 
         <div className="flex gap-3">
           <div className="flex-1 relative">
@@ -172,10 +174,10 @@ export function AdminPage() {
             {loading === 'setFee' ? (
               <span className="flex items-center gap-2">
                 <div className="animate-spin w-4 h-4 border-2 border-white border-t-transparent rounded-full" />
-                Setting...
+                {t('admin.setting')}
               </span>
             ) : (
-              'Set Fee'
+              t('admin.setFeeBtn')
             )}
           </button>
         </div>
@@ -183,10 +185,10 @@ export function AdminPage() {
 
       {/* Withdraw */}
       <div className="bg-white rounded-2xl border border-gray-100 shadow-sm p-6">
-        <h2 className="text-lg font-semibold text-gray-900 mb-4">Withdraw</h2>
+        <h2 className="text-lg font-semibold text-gray-900 mb-4">{t('admin.withdraw')}</h2>
 
         <div className="flex items-center justify-between mb-4">
-          <span className="text-sm text-gray-500">Contract Balance</span>
+          <span className="text-sm text-gray-500">{t('admin.contractBalance')}</span>
           <span className="text-lg font-bold text-gray-900">
             {formatEther(contractBalance)} ETH
           </span>
@@ -200,16 +202,16 @@ export function AdminPage() {
           {loading === 'withdraw' ? (
             <span className="flex items-center justify-center gap-2">
               <div className="animate-spin w-4 h-4 border-2 border-white border-t-transparent rounded-full" />
-              Withdrawing...
+              {t('admin.withdrawing')}
             </span>
           ) : (
-            'Withdraw All'
+            t('admin.withdrawAll')
           )}
         </button>
 
         {contractBalance === 0n && (
           <p className="text-xs text-gray-400 text-center mt-3">
-            No ETH available to withdraw
+            {t('admin.noBalance')}
           </p>
         )}
       </div>

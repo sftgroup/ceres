@@ -19,8 +19,6 @@ export function SearchPage() {
       setResults([])
       return
     }
-
-    // Try to parse as token ID
     try {
       const id = BigInt(trimmed)
       if (id > 0n) {
@@ -28,11 +26,8 @@ export function SearchPage() {
         return
       }
     } catch {
-      // Not a valid number — try as address lookup (simplified for now)
+      // Not a valid number — try address lookup (simplified for now)
     }
-
-    // For address search, we can't easily reverse-lookup without an indexer
-    // Show empty with a note
     setResults([])
   }
 
@@ -46,7 +41,7 @@ export function SearchPage() {
       <div className="text-center mb-10">
         <h1 className="text-3xl font-bold text-gray-900 mb-2">{t('search.title')}</h1>
         <p className="text-gray-500">
-          {maxProfiles > 0 ? `${maxProfiles} profiles on the network` : 'Explore the Ceres network'}
+          {maxProfiles > 0 ? t('search.profileCount', { count: maxProfiles }) : t('search.explore')}
         </p>
       </div>
 
@@ -75,7 +70,7 @@ export function SearchPage() {
             onClick={handleSearch}
             className="px-6 py-3 bg-emerald-600 text-white rounded-xl hover:bg-emerald-700 transition-colors font-medium"
           >
-            Search
+            {t('search.button')}
           </button>
         </div>
       </div>
@@ -84,7 +79,7 @@ export function SearchPage() {
       {results.length > 0 && (
         <div className="mb-10">
           <h2 className="text-lg font-semibold text-gray-900 mb-4">
-            Results ({results.length})
+            {t('search.results', { count: results.length })}
           </h2>
           <div className="space-y-3">
             {results.map((id) => (
@@ -99,7 +94,7 @@ export function SearchPage() {
           <div className="text-4xl mb-3">🔍</div>
           <p className="text-gray-500">{t('search.noResults')}</p>
           <p className="text-sm text-gray-400 mt-1">
-            Try searching by DID Token ID number
+            {t('search.hint')}
           </p>
         </div>
       )}
@@ -117,7 +112,7 @@ export function SearchPage() {
           </div>
           {maxProfiles > 5 && (
             <p className="text-center text-sm text-gray-400 mt-6">
-              ... and {maxProfiles - 5} more profiles. Use search to find specific ones.
+              {t('search.moreProfiles', { count: maxProfiles - 5 })}
             </p>
           )}
         </div>

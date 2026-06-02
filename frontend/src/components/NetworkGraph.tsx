@@ -1,6 +1,7 @@
 import { useMemo, useEffect, useRef, useState, useCallback } from 'react'
 import { useNavigate } from 'react-router-dom'
 import { useCeres } from '../hooks/useCeres'
+import { useI18n } from '../I18nContext'
 
 const LEVEL_COLORS: Record<number, string> = {
   0: '#6B7280',
@@ -44,7 +45,6 @@ const MAX_INVITEES = 20
 
 function useInviteeProfilesSafe(inviteeIds: bigint[]) {
   const { useProfile } = useCeres()
-  // Always call hooks MAX_INVITEES times (fixed count — React rules)
   const results: ReturnType<typeof useProfile>[] = []
   for (let i = 0; i < MAX_INVITEES; i++) {
     const id = i < inviteeIds.length ? inviteeIds[i] : undefined
@@ -54,6 +54,7 @@ function useInviteeProfilesSafe(inviteeIds: bigint[]) {
 }
 
 export function NetworkGraph({ tokenId }: { tokenId: bigint; depth?: number }) {
+  const { t } = useI18n()
   const { useDirectInvitees, useProfile, useLevel, getLevelName } = useCeres()
   const navigate = useNavigate()
   const [tick, setTick] = useState(0)
@@ -130,9 +131,9 @@ export function NetworkGraph({ tokenId }: { tokenId: bigint; depth?: number }) {
 
   if (!center) return (
     <div className="w-full">
-      <h3 className="text-lg font-semibold text-gray-900 mb-4">Network Graph</h3>
+      <h3 className="text-lg font-semibold text-gray-900 mb-4">{t('graph.networkTitle')}</h3>
       <div className="bg-[#0f172a] rounded-2xl border border-gray-800 p-4">
-        <p className="text-center py-20 text-gray-500 text-sm">Loading...</p>
+        <p className="text-center py-20 text-gray-500 text-sm">{t('graph.loading')}</p>
       </div>
     </div>
   )
@@ -140,10 +141,10 @@ export function NetworkGraph({ tokenId }: { tokenId: bigint; depth?: number }) {
   return (
     <div className="w-full">
       <div className="flex items-center justify-between mb-4">
-        <h3 className="text-lg font-semibold text-gray-900">Network Graph</h3>
+        <h3 className="text-lg font-semibold text-gray-900">{t('graph.networkTitle')}</h3>
         {invitees.length > 0 && (
           <span className="text-xs bg-gray-100 text-gray-600 px-2.5 py-1 rounded-full font-medium">
-            {invitees.length} node{invitees.length !== 1 ? 's' : ''} →
+            {invitees.length} {t('graph.nodes', { count: invitees.length, plural: invitees.length !== 1 ? 's' : '' })} →
           </span>
         )}
       </div>
@@ -154,13 +155,12 @@ export function NetworkGraph({ tokenId }: { tokenId: bigint; depth?: number }) {
             <svg className="w-16 h-16 mx-auto mb-4 text-gray-700" fill="none" viewBox="0 0 24 24" stroke="currentColor">
               <path strokeLinecap="round" strokeLinejoin="round" strokeWidth={1} d="M12 4.354a4 4 0 110 5.292M15 21H3v-1a6 6 0 0112 0v1zm0 0h6v-1a6 6 0 00-9-5.197m13.5-9a2.5 2.5 0 11-5 0 2.5 2.5 0 015 0z" />
             </svg>
-            <p className="text-sm">No connections yet</p>
-            <p className="text-xs text-gray-600 mt-1">Share your invite link</p>
+            <p className="text-sm">{t('graph.noConnections')}</p>
+            <p className="text-xs text-gray-600 mt-1">{t('graph.shareInvite')}</p>
           </div>
         ) : (
           <svg ref={undefined as any} viewBox="0 0 520 520" className="w-full max-w-[520px] mx-auto">
             <defs>
-              {/* Glow filters */}
               <filter id="cg"><feGaussianBlur stdDeviation="5"/><feMerge><feMergeNode in="blur"/><feMergeNode in="blur"/><feMergeNode in="SourceGraphic"/></feMerge></filter>
               <filter id="ng"><feGaussianBlur stdDeviation="3"/><feMerge><feMergeNode in="blur"/><feMergeNode in="SourceGraphic"/></feMerge></filter>
 
@@ -236,7 +236,6 @@ export function NetworkGraph({ tokenId }: { tokenId: bigint; depth?: number }) {
 
             {/* Center node */}
             <g onClick={() => navigate(`/profile/${tokenId}`)} className="cursor-pointer">
-              {/* Breathe ring */}
               <circle cx={center.x} cy={center.y} r={center.radius + 8 + 4 * Math.sin(tick * 0.03)} fill={LEVEL_GLOW[centerLevelVal] ?? 'rgba(107,114,128,0.5)'} opacity={0.3}>
                 <animate attributeName="opacity" values="0.25;0.08;0.25" dur="3s" repeatCount="indefinite"/>
               </circle>

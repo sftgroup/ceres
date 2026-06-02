@@ -1,5 +1,5 @@
 import { useState, useEffect } from 'react'
-import { useSearchParams, useNavigate } from 'react-router-dom'
+import { useSearchParams, useNavigate, Link } from 'react-router-dom'
 import { useAccount } from 'wagmi'
 import { useCeres } from '../hooks/useCeres'
 import { useI18n } from '../I18nContext'
@@ -15,7 +15,6 @@ export function MintPage() {
   const inviterFromUrl = searchParams.get('ref') ?? ''
   const inviterTokenId = inviterFromUrl ? BigInt(inviterFromUrl) : undefined
 
-  // Validate inviter
   const { data: inviterProfile, isLoading: inviterLoading } = useProfile(inviterTokenId)
 
   const { data: mintFeeData } = useMintFee()
@@ -49,7 +48,6 @@ export function MintPage() {
       const inviterId = inviterTokenId ?? 0n
       const feeValue = mintFeeEnabled ? mintFeeWei : undefined
       const hash = await createProfile(name, bio, avatar, urlList, inviterId, feeValue)
-      // Refresh all cached data so redirect shows updated state
       invalidateAll()
       setSuccessTokenId(hash as unknown as bigint)
     } catch (e) {
@@ -59,7 +57,6 @@ export function MintPage() {
     }
   }
 
-  // On success, redirect to invite page after a brief delay
   useEffect(() => {
     if (successTokenId !== null) {
       const timer = setTimeout(() => {
@@ -74,36 +71,35 @@ export function MintPage() {
       <div className="min-h-screen bg-gradient-to-br from-emerald-50 via-white to-teal-50 flex items-center justify-center">
         <div className="max-w-md mx-auto px-4 py-16 text-center">
           <div className="text-6xl mb-6">🌱</div>
-          <h2 className="text-2xl font-bold text-gray-900 mb-3">Connect Your Wallet</h2>
-          <p className="text-gray-500 mb-8">Connect your wallet to mint your Ceres DID and join the network.</p>
+          <h2 className="text-2xl font-bold text-gray-900 mb-3">{t('mint.connectWallet')}</h2>
+          <p className="text-gray-500 mb-8">{t('mint.connectDesc')}</p>
           <ConnectButton variant="cta" />
         </div>
       </div>
     )
   }
 
-  // Already has a DID — show profile link
   if (hasDID && userTokenId != null) {
     return (
       <div className="min-h-screen bg-gradient-to-br from-emerald-50 via-white to-teal-50 flex items-center justify-center">
         <div className="max-w-md mx-auto px-4 py-16 text-center">
           <div className="text-6xl mb-6">✅</div>
-          <h2 className="text-2xl font-bold text-gray-900 mb-3">You Already Have a DID</h2>
+          <h2 className="text-2xl font-bold text-gray-900 mb-3">{t('mint.alreadyHaveDID')}</h2>
           <p className="text-gray-500 mb-4">
-            Your wallet already owns a Ceres DID. Each address can only mint one DID.
+            {t('mint.alreadyHaveDesc')}
           </p>
           <div className="flex items-center justify-center gap-3">
             <button
               onClick={() => navigate(`/profile/${userTokenId}`)}
               className="px-6 py-3 bg-gradient-to-r from-emerald-600 to-teal-500 text-white font-semibold rounded-xl hover:from-emerald-700 hover:to-teal-600 transition-all shadow-lg"
             >
-              View Profile →
+              {t('mint.viewProfile')}
             </button>
             <button
               onClick={() => navigate('/')}
               className="px-6 py-3 bg-gray-100 text-gray-700 font-semibold rounded-xl hover:bg-gray-200 transition-all"
             >
-              Go Home
+              {t('mint.goHome')}
             </button>
           </div>
         </div>
@@ -115,7 +111,7 @@ export function MintPage() {
     return (
       <div className="max-w-2xl mx-auto px-4 py-16 text-center">
         <div className="animate-spin w-8 h-8 border-2 border-emerald-600 border-t-transparent rounded-full mx-auto" />
-        <p className="text-gray-500 mt-4">Validating invite link...</p>
+        <p className="text-gray-500 mt-4">{t('mint.validating')}</p>
       </div>
     )
   }
@@ -124,15 +120,14 @@ export function MintPage() {
     return (
       <div className="max-w-2xl mx-auto px-4 py-16 text-center">
         <div className="text-6xl mb-4">❌</div>
-        <h2 className="text-xl font-semibold text-gray-900 mb-2">Invalid Invite Link</h2>
+        <h2 className="text-xl font-semibold text-gray-900 mb-2">{t('mint.invalidInvite')}</h2>
         <p className="text-gray-500">
-          The inviter (DID #{inviterFromUrl}) does not exist. Please check your link and try again.
+          {t('mint.inviterNotFound', { id: inviterFromUrl })}
         </p>
       </div>
     )
   }
 
-  // Success state
   if (successTokenId !== null) {
     return (
       <div className="max-w-2xl mx-auto px-4 py-16 text-center">
@@ -142,7 +137,7 @@ export function MintPage() {
           </svg>
         </div>
         <h2 className="text-2xl font-bold text-gray-900 mb-2">{t('create.success')}</h2>
-        <p className="text-gray-500 mb-6">Your Ceres DID has been minted! Redirecting...</p>
+        <p className="text-gray-500 mb-6">{t('mint.successDesc')}</p>
         <div className="animate-spin w-6 h-6 border-2 border-emerald-600 border-t-transparent rounded-full mx-auto" />
       </div>
     )
@@ -151,25 +146,23 @@ export function MintPage() {
   return (
     <div className="min-h-screen bg-gradient-to-br from-emerald-50 via-white to-teal-50">
       <div className="max-w-2xl mx-auto px-4 sm:px-6 lg:px-8 py-12">
-        {/* Hero */}
         <div className="text-center mb-10">
           <div className="text-5xl mb-4">🌾</div>
           <h1 className="text-3xl font-bold text-gray-900 mb-2">
-            You've been invited to Ceres
+            {t('mint.invitedTitle')}
           </h1>
           <p className="text-gray-500">
-            Mint your DID NFT and join the decentralized social graph
+            {t('mint.invitedDesc')}
           </p>
         </div>
 
-        {/* Inviter Info Card */}
         {inviterName && (
           <div className="bg-white rounded-2xl border border-emerald-100 shadow-sm p-5 mb-8 flex items-center gap-4">
             <div className="w-12 h-12 bg-gradient-to-br from-emerald-400 to-teal-500 rounded-full flex items-center justify-center text-white font-bold text-lg">
               {inviterName.charAt(0)?.toUpperCase() ?? '#'}
             </div>
             <div>
-              <p className="text-sm text-gray-500">Invited by</p>
+              <p className="text-sm text-gray-500">{t('mint.invitedBy')}</p>
               <p className="font-semibold text-gray-900">{inviterName}</p>
             </div>
             <div className="ml-auto text-xs bg-emerald-50 text-emerald-700 px-3 py-1 rounded-full font-medium">
@@ -178,7 +171,6 @@ export function MintPage() {
           </div>
         )}
 
-        {/* Create Profile Form */}
         <div className="bg-white rounded-2xl border border-gray-100 shadow-sm p-6 sm:p-8">
           <h2 className="text-xl font-bold text-gray-900 mb-6">{t('create.title')}</h2>
 
@@ -195,7 +187,6 @@ export function MintPage() {
                 placeholder="Your display name"
               />
             </div>
-
             <div>
               <label className="block text-sm font-medium text-gray-700 mb-1">{t('create.bio')}</label>
               <textarea
@@ -206,7 +197,6 @@ export function MintPage() {
                 placeholder="Tell others about yourself"
               />
             </div>
-
             <div>
               <label className="block text-sm font-medium text-gray-700 mb-1">{t('create.avatar')}</label>
               <input
@@ -217,7 +207,6 @@ export function MintPage() {
                 placeholder="https://your-avatar-url.com/photo.png"
               />
             </div>
-
             <div>
               <label className="block text-sm font-medium text-gray-700 mb-1">{t('create.urls')}</label>
               <input
@@ -229,24 +218,22 @@ export function MintPage() {
               />
             </div>
 
-            {/* Inviter (read-only from URL) */}
             {inviterFromUrl && (
               <div className="p-4 bg-emerald-50 rounded-xl">
                 <label className="block text-sm font-medium text-emerald-800 mb-1">
                   {t('create.inviter')}
                 </label>
                 <p className="text-emerald-700 font-medium">DID #{inviterFromUrl}</p>
-                <p className="text-xs text-emerald-600 mt-1">This field is set from your invite link and cannot be changed.</p>
+                <p className="text-xs text-emerald-600 mt-1">{t('mint.cannotChange')}</p>
               </div>
             )}
 
-            {/* Fee Info */}
             {mintFeeEnabled && (
               <div className="p-4 bg-amber-50 rounded-xl border border-amber-200">
                 <div className="flex items-center gap-2">
                   <span className="text-amber-600">💰</span>
                   <span className="text-sm font-medium text-amber-800">
-                    Mint Fee: {mintFeeEth} ETH
+                    {t('create.mintFee', { fee: mintFeeEth })}
                   </span>
                 </div>
                 <p className="text-xs text-amber-600 mt-1">
@@ -278,15 +265,14 @@ export function MintPage() {
           </button>
 
           <p className="text-xs text-gray-400 text-center mt-4">
-            By minting, you agree to the Ceres terms. DID NFTs are non-transferable by default.
+            {t('mint.terms')}
           </p>
         </div>
 
-        {/* Back link */}
         <div className="text-center mt-6">
-          <a href="/" className="text-sm text-gray-400 hover:text-emerald-600 transition-colors">
-            ← Back to Home
-          </a>
+          <Link to="/" className="text-sm text-gray-400 hover:text-emerald-600 transition-colors">
+            {t('mint.backHome')}
+          </Link>
         </div>
       </div>
     </div>

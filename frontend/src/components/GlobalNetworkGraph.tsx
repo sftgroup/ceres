@@ -1,6 +1,7 @@
 import { useMemo, useEffect, useRef, useState, useCallback } from 'react'
 import { useNavigate } from 'react-router-dom'
 import { useCeres } from '../hooks/useCeres'
+import { useI18n } from '../I18nContext'
 
 const MAX_NODES = 24
 
@@ -47,6 +48,7 @@ function useGlobalGraphData() {
 }
 
 export function GlobalNetworkGraph() {
+  const { t } = useI18n()
   const navigate = useNavigate()
   const { total, profiles, inviters } = useGlobalGraphData()
   const [tick, setTick] = useState(0)
@@ -129,12 +131,19 @@ export function GlobalNetworkGraph() {
     setSelectedNode(alreadySelected ? null : n)
   }
 
+  const handleViewProfile = (e: React.MouseEvent) => {
+    e.stopPropagation()
+    if (selectedNode) {
+      navigate(`/profile/${selectedNode.tokenId}`)
+    }
+  }
+
   if (error) {
     return (
       <div className="w-full">
-        <h3 className="text-lg font-semibold text-gray-900 mb-4">Global Network</h3>
+        <h3 className="text-lg font-semibold text-gray-900 mb-4">{t('graph.globalTitle')}</h3>
         <div className="bg-red-50 border border-red-200 rounded-2xl p-6 text-center">
-          <p className="text-red-600 text-sm font-medium">Unable to render graph</p>
+          <p className="text-red-600 text-sm font-medium">{t('graph.error')}</p>
           <p className="text-red-400 text-xs mt-1">{error}</p>
         </div>
       </div>
@@ -145,10 +154,10 @@ export function GlobalNetworkGraph() {
     return (
       <div className="w-full">
         <div className="flex items-center justify-between mb-4">
-          <h3 className="text-lg font-semibold text-gray-900">Global Network</h3>
+          <h3 className="text-lg font-semibold text-gray-900">{t('graph.globalTitle')}</h3>
         </div>
         <div className="bg-[#0f172a] rounded-2xl border border-gray-800 p-4">
-          <p className="text-center py-20 text-gray-500 text-sm">No DIDs yet — be the first to mint!</p>
+          <p className="text-center py-20 text-gray-500 text-sm">{t('graph.noDids')}</p>
         </div>
       </div>
     )
@@ -156,22 +165,22 @@ export function GlobalNetworkGraph() {
 
   const containerClass = isFullscreen
     ? 'fixed inset-0 z-[200] bg-[#0f172a] flex flex-col'
-    : 'bg-[#0f172a] rounded-2xl border border-gray-800 p-4 overflow-hidden'
+    : 'bg-[#0f172a] rounded-2xl border border-gray-800 p-4'
 
   return (
     <div className="w-full">
       {/* Header */}
       <div className="flex items-center justify-between mb-4">
-        <h3 className="text-lg font-semibold text-gray-900">Global Network</h3>
+        <h3 className="text-lg font-semibold text-gray-900">{t('graph.globalTitle')}</h3>
         <div className="flex items-center gap-2">
           <span className="text-xs bg-gray-100 text-gray-600 px-2.5 py-1 rounded-full font-medium">
-            {total} DIDs · {edges.length} edges
+            {t('graph.stats', { dids: total, edges: edges.length })}
           </span>
           <button
             onClick={() => setIsFullscreen(!isFullscreen)}
             className="text-xs px-2 py-1 rounded border border-gray-200 text-gray-500 hover:border-emerald-300 hover:text-emerald-600 transition-colors"
           >
-            {isFullscreen ? '✕ Close' : '⛶ Fullscreen'}
+            {isFullscreen ? t('graph.closeFullscreen') : t('graph.fullscreen')}
           </button>
         </div>
       </div>
@@ -245,7 +254,7 @@ export function GlobalNetworkGraph() {
                 </text>
                 {(isLatest || n.name) && n.name && (
                   <text x={n.x} y={n.y + r + 14} textAnchor="middle" fill="#94a3b8" fontSize="9">
-                    {n.name.length > 8 ? n.name.slice(0, 8) + '…' : n.name}
+                    {n.name.length > 8 ? n.name.slice(0, 8) + '\u2026' : n.name}
                   </text>
                 )}
               </g>
@@ -267,15 +276,17 @@ export function GlobalNetworkGraph() {
         {isFullscreen && (
           <button onClick={() => setIsFullscreen(false)}
             className="absolute top-4 right-4 z-30 px-3 py-1.5 bg-white/10 text-white border border-white/20 rounded-lg hover:bg-white/20 transition-colors text-sm">
-            ✕ Exit Fullscreen
+            {t('graph.exitFullscreen')}
           </button>
         )}
 
         {/* Detail card */}
         {selectedNode && (
-          <div className={isFullscreen
-            ? 'absolute bottom-6 left-1/2 -translate-x-1/2 z-20 bg-gray-900 border border-emerald-500/30 rounded-2xl p-5 shadow-2xl min-w-[280px]'
-            : 'absolute bottom-4 left-1/2 -translate-x-1/2 z-20 bg-gray-900 border border-emerald-500/30 rounded-2xl p-5 shadow-2xl min-w-[260px]'
+          <div
+            onClick={(e) => e.stopPropagation()}
+            className={isFullscreen
+              ? 'absolute bottom-6 left-1/2 -translate-x-1/2 z-20 bg-gray-900 border border-emerald-500/30 rounded-2xl p-5 shadow-2xl min-w-[280px]'
+              : 'absolute bottom-4 left-1/2 -translate-x-1/2 z-20 bg-gray-900 border border-emerald-500/30 rounded-2xl p-5 shadow-2xl min-w-[260px]'
           }>
             <div className="flex items-start gap-3">
               <div className="w-10 h-10 rounded-full flex items-center justify-center text-white font-bold text-sm shrink-0"
@@ -295,27 +306,27 @@ export function GlobalNetworkGraph() {
                 <p className="text-xs text-gray-400 mt-0.5">DID #{selectedNode.tokenId}</p>
                 {selectedInviter ? (
                   <p className="text-xs text-gray-500 mt-1">
-                    Invited by{' '}
-                    <button onClick={() => setSelectedNode(selectedInviter)}
+                    {t('graph.invitedBy')}{' '}
+                    <button onClick={(e) => { e.stopPropagation(); setSelectedNode(selectedInviter) }}
                       className="text-emerald-400 hover:underline">
                       {selectedInviter.name || `#${selectedNode.inviterId}`}
                     </button>
                   </p>
                 ) : selectedNode.inviterId > 0 ? (
-                  <p className="text-xs text-gray-500 mt-1">Invited by #{selectedNode.inviterId}</p>
+                  <p className="text-xs text-gray-500 mt-1">{t('graph.invitedBy')} #{selectedNode.inviterId}</p>
                 ) : (
-                  <p className="text-xs text-gray-600 mt-1">Root node</p>
+                  <p className="text-xs text-gray-600 mt-1">{t('graph.rootNode')}</p>
                 )}
               </div>
             </div>
             <div className="flex gap-2 mt-4">
-              <button onClick={() => navigate(`/profile/${selectedNode.tokenId}`)}
+              <button onClick={handleViewProfile}
                 className="flex-1 px-4 py-2 bg-emerald-600 text-white text-sm rounded-lg hover:bg-emerald-700 transition-colors font-medium">
-                View Profile →
+                {t('graph.viewProfile')}
               </button>
-              <button onClick={() => setSelectedNode(null)}
+              <button onClick={(e) => { e.stopPropagation(); setSelectedNode(null) }}
                 className="px-4 py-2 border border-gray-600 text-gray-300 text-sm rounded-lg hover:bg-gray-800 transition-colors">
-                Close
+                {t('graph.close')}
               </button>
             </div>
           </div>
