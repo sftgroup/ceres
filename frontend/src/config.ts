@@ -12,6 +12,7 @@ const SEPOLIA_RPC = 'https://sepolia.gateway.tenderly.co'
 export const config = createConfig({
   chains: [sepolia, mainnet],
   syncConnectedChain: true,
+  ssr: false,
   transports: {
     [sepolia.id]: http(SEPOLIA_RPC),
     [mainnet.id]: http('https://eth.merkle.io'),
