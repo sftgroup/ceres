@@ -1,4 +1,4 @@
-import { useEffect } from 'react'
+import { useEffect, Component } from 'react'
 import { BrowserRouter, Routes, Route } from 'react-router-dom'
 import { QueryClient, QueryClientProvider } from '@tanstack/react-query'
 import { WagmiProvider, useConnect, useAccount } from 'wagmi'
@@ -20,6 +20,29 @@ const queryClient = new QueryClient({
     },
   },
 })
+
+class ErrorBoundary extends Component<{ children: React.ReactNode }, { error: string | null }> {
+  state = { error: null as string | null }
+  static getDerivedStateFromError(e: Error) { return { error: e.message } }
+  render() {
+    if (this.state.error) {
+      return (
+        <div className="min-h-screen bg-gray-50 flex items-center justify-center">
+          <div className="text-center max-w-md px-4">
+            <div className="text-4xl mb-4">⚠️</div>
+            <h2 className="text-xl font-bold text-gray-900 mb-2">Something went wrong</h2>
+            <p className="text-sm text-gray-500 mb-4">{this.state.error}</p>
+            <button onClick={() => { this.setState({ error: null }); window.location.reload() }}
+              className="px-6 py-2 bg-emerald-600 text-white rounded-lg hover:bg-emerald-700 transition-colors">
+              Reload
+            </button>
+          </div>
+        </div>
+      )
+    }
+    return this.props.children
+  }
+}
 
 /**
  * After "Switch Account" triggers a page reload, sessionStorage holds the
@@ -65,6 +88,7 @@ function App() {
       <QueryClientProvider client={queryClient}>
         <I18nProvider>
           <BrowserRouter>
+            <ErrorBoundary>
             <WalletSync>
               <div className="min-h-screen bg-gray-50">
                 <Navbar />
@@ -80,6 +104,7 @@ function App() {
                 </main>
               </div>
               </WalletSync>
+            </ErrorBoundary>
           </BrowserRouter>
         </I18nProvider>
       </QueryClientProvider>
