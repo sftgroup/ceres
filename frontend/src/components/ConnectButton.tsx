@@ -52,14 +52,27 @@ export function ConnectButton({ variant = 'header', className = '' }: ConnectBut
     setDropdownOpen(false)
   }
 
-  const handleSwitchAccount = () => {
+  const handleSwitchAccount = async () => {
     setDropdownOpen(false)
-    disconnect()
-    // Clear wagmi's cached connection state from localStorage
-    const wagmiKeys = Object.keys(localStorage).filter(k => k.startsWith('wagmi'))
-    wagmiKeys.forEach(k => localStorage.removeItem(k))
-    // Force page reload to pick up the new OKX account
-    window.location.reload()
+    const connector = connectors[0]
+    if (connector) {
+      try {
+        // Force wallet to show account picker by requesting permissions
+        const provider = await connector.getProvider() as any
+        await provider.request({
+          method: 'wallet_requestPermissions',
+          params: [{ eth_accounts: {} }],
+        })
+      } catch {
+        // Fallback: disconnect and reconnect
+        disconnect()
+        const wagmiKeys = Object.keys(localStorage).filter(k => k.startsWith('wagmi'))
+        wagmiKeys.forEach(k => localStorage.removeItem(k))
+        setTimeout(() => {
+          connect({ connector })
+        }, 100)
+      }
+    }
   }
 
   const handleDisconnect = () => {

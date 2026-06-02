@@ -88,8 +88,12 @@ export function Navbar() {
                       {chains.map((c) => (
                         <button
                           key={c.id}
-                          onClick={() => {
-                            switchChain({ chainId: c.id })
+                          onClick={async () => {
+                            try {
+                              await switchChain({ chainId: c.id })
+                            } catch (e) {
+                              console.error('Switch chain failed:', e)
+                            }
                             setChainMenuOpen(false)
                           }}
                           className={`w-full flex items-center gap-2 px-4 py-2 text-sm text-left transition-colors ${

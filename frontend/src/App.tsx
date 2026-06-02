@@ -1,6 +1,7 @@
+import { useEffect } from 'react'
 import { BrowserRouter, Routes, Route } from 'react-router-dom'
 import { QueryClient, QueryClientProvider } from '@tanstack/react-query'
-import { WagmiProvider } from 'wagmi'
+import { WagmiProvider, useAccount, useReconnect } from 'wagmi'
 import { config } from './config'
 import { I18nProvider } from './I18nContext'
 import { Navbar } from './components/Navbar'
@@ -20,12 +21,44 @@ const queryClient = new QueryClient({
   },
 })
 
+// Wallet event sync — watches for account/chain changes from wallet
+function WalletSync({ children }: { children: React.ReactNode }) {
+  const { reconnect } = useReconnect()
+  const { isConnected } = useAccount()
+
+  useEffect(() => {
+    const ethereum = (window as any).ethereum
+    if (!ethereum) return
+
+    const handleAccountsChanged = () => {
+      // Wagmi should handle this, but force reconnect to be safe
+      if (isConnected) {
+        reconnect()
+      }
+    }
+
+    const handleChainChanged = () => {
+      // Wagmi's syncConnectedChain should handle this
+    }
+
+    ethereum.on('accountsChanged', handleAccountsChanged)
+    ethereum.on('chainChanged', handleChainChanged)
+    return () => {
+      ethereum.removeListener('accountsChanged', handleAccountsChanged)
+      ethereum.removeListener('chainChanged', handleChainChanged)
+    }
+  }, [reconnect, isConnected])
+
+  return <>{children}</>
+}
+
 function App() {
   return (
     <WagmiProvider config={config}>
       <QueryClientProvider client={queryClient}>
         <I18nProvider>
           <BrowserRouter>
+            <WalletSync>
             <div className="min-h-screen bg-gray-50">
               <Navbar />
               <main>
@@ -39,6 +72,7 @@ function App() {
                 </Routes>
               </main>
             </div>
+            </WalletSync>
           </BrowserRouter>
         </I18nProvider>
       </QueryClientProvider>
